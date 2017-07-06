@@ -7,123 +7,30 @@
 <link rel="stylesheet" type="text/css" href="jquery-easyui-1.5.2/themes/icon.css">
 <link rel="stylesheet" type="text/css" href="jquery-easyui-1.5.2/themes/color.css">
 <link rel="stylesheet" type="text/css" href="jquery-easyui-1.5.2/demo/demo.css">
+<link rel="stylesheet" type="text/css" href="easyui-framework.css">
 <script type="text/javascript" src="jquery-easyui-1.5.2/jquery.min.js"></script>
 <script type="text/javascript" src="jquery-easyui-1.5.2/jquery.easyui.min.js"></script>
-<script type="text/javascript" src='tinymce-4.6.4/tinymce.min.js'></script>
+<script type="text/javascript" src="tinymce-3.5.8/tiny_mce.js"></script>
+<script type="text/javascript" src="easyui-framework.js"></script>
 <script type="text/javascript">
-function post(url, request, callBack) {
-	$.ajax({
-	    url : url,
-	    type : 'POST',
-	    data : JSON.stringify(request),
-	    contentType : 'application/json;charset=utf-8',
-	    dataType : 'json',
-	    async : true,
-	    success : function(response) {
-	    		callBack.call(response);// Call passes the argument to this object in the call back function.
-	    }
-	});
-}
-
-function print(url, request, tableId) {
-	post(url, request, function() {
-		for (var i = 0; i < this.length; i++) {
-			addRow(tableId, this[i]);
-		}
-	});
-}
-
-function getColumnIds(tableId) {
-	var ths = $('#' + tableId + 'th');
-	var columns = [];
-	$('th').each(function(index) {// TODO Wondering what index means.
-		columns.push($(this).attr('field'));
-	});
-	return columns;
-}
-
-function addRow(tableId, row) {
-	$('#' + tableId).datagrid('appendRow', row);
-}
-
-function openDialog(dialogId, title) {
-	$('#' + dialogId).dialog('open').dialog('setTitle', title);
-}
-
-function closeDialog(dialogId) {
-	$('#' + dialogId).dialog('close');
-}
-
-function clearForm(formId) {
-	$('#' + formId).form('clear');
-}
-
-function getRow(tableId, callBack) {
-	return $('#' + tableId).datagrid('getSelected');
-}
-
-function display(object) {
-	for (i in object) {
-		alert(object[i]);
-	}
-}
-
-function deleteRows(tableId) {
-	$('#' + tableId).datagrid('loadData', []);
-}
-
 $(document).ready(function() {
+	initialize();
 	var request = {name : 'Chen'};
-	post('get', request, function() {
-		console.info(JSON.stringify(this));
-	});
-	print('get', request, 'dg');
-	var columns = getColumnIds('dg');
+	postAndPrint('get', request, 'output');
+	var columns = getColumnIds('output');
 	for (i in columns) {
 		console.info(columns[i]);
 	}
-	openDialog('dlg', "New User");
-	alert(getRow('dg'));
-	tinymce.init({
-		selector : '#message'
-	});
+	console.info(getRow('output'));
 });
 </script>
-<!-- CSS -->
-<style type="text/css">
-#fm {
-	margin: 0;
-	padding: 10px 30px;
-}
-
-.ftitle {
-	font-size: 14px;
-	font-weight: bold;
-	padding: 5px 0;
-	margin-bottom: 10px;
-	border-bottom: 1px solid #ccc;
-}
-
-.fitem {
-	margin-bottom: 5px;
-}
-
-.fitem label {
-	display: inline-block;
-	width: 80px;
-}
-
-.fitem input {
-	width: 160px;
-}
-</style>
 </head>
 <body>
 	<script type="text/javascript">
 		function anyFunction() {
-			var row = getRow('dg');
+			var row = getRow('output');
 			display(row);
-			deleteRows('dg');
+			deleteRows('output');
 		}
 	</script>
 	
@@ -131,14 +38,14 @@ $(document).ready(function() {
 	
 	<!-- Tool Bar -->
 	<div id="toolbar">
-		Name: <input class="easyui-textbox" data-options="iconCls:'icon-search'" style="width:300px">
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">New User</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">Edit User</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteRows('dg')">Remove User</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('create', 'Create')">Find</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="openDialog('create', 'Create')">Create</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">Update</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteRows('output')">Delete</a>
 	</div>
 	
-	<!-- Data Grid -->
-	<table id="dg" title="My Users" class="easyui-datagrid" style="width:700px;height:250px"
+	<!-- Output -->
+	<table id="output" title="Output" class="easyui-datagrid" style="width:700px;height:250px"
 			toolbar="#toolbar" pagination="true"
 			rownumbers="true" fitColumns="true" singleSelect="true">
 		<thead>
@@ -149,40 +56,42 @@ $(document).ready(function() {
 				<th field="email" width="50" sortable="true">Email</th>
 			</tr>
 		</thead>
-		<tbody>
-		</tbody>
+		<tbody></tbody>
 	</table>
 
-	<!-- Dialog -->
-	<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
-			closed="true" buttons="#dlg-buttons">
+	<!-- Create Dialog -->
+	<div id="create" class="easyui-dialog" style="width:800px;height:400px;padding:10px 20px"
+			closed="true" buttons="#createButtons">
 		<div class="ftitle">User Information</div>
-		<form id="fm" method="post" novalidate>
+		<div class="form">
 			<div class="fitem">
-				<label>First Name:</label>
-				<input name="firstname" class="easyui-textbox" required="true">
+				<label>Name:</label>
+				<input name="name" class="easyui-textbox" required="true" data-options="iconCls:'icon-search'" style="width:200px">
 			</div>
 			<div class="fitem">
-				<label>Last Name:</label>
-				<input name="lastname" class="easyui-textbox" required="true">
-			</div>
-			<div class="fitem">
-				<label>Phone:</label>
-				<input name="phone" class="easyui-textbox">
+				<label>Gender:</label>
+				<select name="gender" class="easyui-combobox" style="width:200px">
+				    <option value="F">Female</option>
+				    <option value="M">Male</option>
+				</select>
 			</div>
 			<div class="fitem">
 				<label>Email:</label>
 				<input name="email" class="easyui-textbox" validType="email">
 			</div>
 			<div class="fitem">
-				<label>Message:</label>
-				<textarea id="message"></textarea>
+				<label>Date</label>
+				<input name="date" type="text" class="easyui-datebox" required="required">
 			</div>
-		</form>
+			<div class="fitem">
+				<label>Message:</label>
+				<textarea name="message" class="richTextEditor"></textarea>
+			</div>
+		</div>
 	</div>
-	<div id="dlg-buttons">
-		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveUser()" style="width:90px">Save</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px">Cancel</a>
+	<div id="createButtons">
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postForm('post', 'create')" style="width:90px">Create</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('create')" style="width:90px">Cancel</a>
 	</div>	
 </body>
 </html>
