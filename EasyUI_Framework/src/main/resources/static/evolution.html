@@ -29,7 +29,6 @@ $(document).ready(function() {
 	<script type="text/javascript">
 		function anyFunction() {
 			var row = getRow('output');
-			display(row);
 			deleteRows('output');
 		}
 	</script>
@@ -39,7 +38,7 @@ $(document).ready(function() {
 	<!-- Tool Bar -->
 	<div id="toolbar">
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('create', 'Create')">Find</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="openDialog('create', 'Create')">Create</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="openDialog('create', 'Create', 'output')">Create</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">Update</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteRows('output')">Delete</a>
 	</div>
@@ -66,21 +65,21 @@ $(document).ready(function() {
 		<div class="form">
 			<div class="fitem">
 				<label>Name:</label>
-				<input name="name" class="easyui-textbox" required="true" data-options="iconCls:'icon-search'" style="width:200px">
+				<input name="name" data-options="iconCls:'icon-search'" style="width:200px">
 			</div>
 			<div class="fitem">
 				<label>Gender:</label>
-				<select name="gender" class="easyui-combobox" style="width:200px">
+				<select name="gender" style="width:200px">
 				    <option value="F">Female</option>
 				    <option value="M">Male</option>
 				</select>
 			</div>
 			<div class="fitem">
 				<label>Email:</label>
-				<input name="email" class="easyui-textbox" validType="email">
+				<input name="email">
 			</div>
 			<div class="fitem">
-				<label>Date</label>
+				<label>Date:</label>
 				<input name="date" type="text" class="easyui-datebox" required="required">
 			</div>
 			<div class="fitem">

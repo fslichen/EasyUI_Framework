@@ -1,12 +1,25 @@
+var formElements = 'input, select';
+
 function initialize() {
 	tinymce.init({
 		selector : '.richTextEditor'
 	});
 }
 
+function fillInForm(tableId, id) {
+	var row = getRow(tableId);
+	var columnIds = getColumnIds(tableId);
+	$('#' + id).find(formElements).each(function() {
+		var value = row[$(this).attr('name')];
+		if (value != null) {
+			$(this).val(value);
+		}
+	});
+}
+
 function getForm(id) {
 	var data = {};
-	$('#' + id).find('.easyui-textbox, .easyui-combobox, .easyui-datebox').each(function() {
+	$('#' + id).find(formElements).each(function() {
 		data[$(this).attr('textboxname')] = $(this).val();
 	});
 	alert(JSON.stringify(data));
@@ -48,7 +61,7 @@ function postFormAndPrint(url, id, tableId) {
 function getColumnIds(tableId) {
 	var ths = $('#' + tableId + 'th');
 	var columns = [];
-	$('th').each(function(index) {// TODO Wondering what index means.
+	$('th').each(function() {
 		columns.push($(this).attr('field'));
 	});
 	return columns;
@@ -58,8 +71,11 @@ function addRow(tableId, row) {
 	$('#' + tableId).datagrid('appendRow', row);
 }
 
-function openDialog(dialogId, title) {
+function openDialog(dialogId, title, tableId) {
 	$('#' + dialogId).dialog('open').dialog('setTitle', title);
+	if (tableId != null) {
+		fillInForm(tableId, dialogId);
+	}
 }
 
 function closeDialog(dialogId) {
