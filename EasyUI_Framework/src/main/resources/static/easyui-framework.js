@@ -1,9 +1,13 @@
-var formElements = 'input, select';
+var formElements = 'input, select, textarea';// TODO Add more elements.
 
 function initialize() {
 	tinymce.init({
 		selector : '.richTextEditor'
 	});
+}
+
+function getRichText() {
+	return tinymce.activeEditor.getContent();
 }
 
 function fillInForm(tableId, id) {
@@ -20,7 +24,13 @@ function fillInForm(tableId, id) {
 function getForm(id) {
 	var data = {};
 	$('#' + id).find(formElements).each(function() {
-		data[$(this).attr('textboxname')] = $(this).val();
+		var key = $(this).attr('name');
+		var clazz = $(this).attr('class');
+		if (clazz == 'richTextEditor') {
+			data[key] = getRichText();
+		} else {
+			data[key] = $(this).val();
+		}
 	});
 	alert(JSON.stringify(data));
 	return data;
