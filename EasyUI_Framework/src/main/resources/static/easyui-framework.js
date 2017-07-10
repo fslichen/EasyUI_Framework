@@ -32,7 +32,6 @@ function getForm(id) {
 			data[key] = $(this).val();
 		}
 	});
-	alert(JSON.stringify(data));
 	return data;
 }
 
@@ -96,7 +95,7 @@ function clearForm(formId) {
 	$('#' + formId).form('clear');
 }
 
-function getRow(tableId, callBack) {
+function getRow(tableId) {
 	return $('#' + tableId).datagrid('getSelected');
 }
 
