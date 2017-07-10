@@ -15,6 +15,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	initialize();
+	setPagination('output', 'outputPagination');
 });
 </script>
 </head>
@@ -133,20 +134,31 @@ $(document).ready(function() {
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('updateDialog')" style="width:90px">Cancel</a>
 	</div>	
 	
-	<!-- Output -->
-	<table id="output" title="Output" class="easyui-datagrid" style="width:700px;height:250px"
-			toolbar="#toolbar" pagination="true"
-			rownumbers="true" fitColumns="true" singleSelect="true">
-		<thead>
-			<tr>
-				<th field="name" width="50" sortable="false">Name</th>
-				<th field="gender" width="50" sortable="false">Gender</th>
-				<th field="birthday" width="50" sortable="false">Birthday</th>
-				<th field="email" width="50" sortable="false">Email</th>
-				<th field="message" width="50" sortable="false">Message</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
+	<!-- Panel -->
+	<div id="panel" class="easyui-panel" title="Panel"
+		style="width: 1000px; height: 500px; padding: 10px; background: #fafafa;"
+		data-options="iconCls:'icon-save',closable:false,
+                collapsible:true,minimizable:false,maximizable:true">
+		<!-- Pagination -->
+		<div id="outputPagination" class="easyui-pagination"
+			style="background: #efefef; border: 1px solid #ccc;"
+			data-options="total:2000,pageSize:10">
+		</div>
+		<!-- Output -->
+		<table id="output" title="Output" class="easyui-datagrid"
+				toolbar="#toolbar" pagination="false"
+				rownumbers="true" fitColumns="true" singleSelect="true">
+			<thead>
+				<tr>
+					<th field="name" width="50" sortable="false">Name</th>
+					<th field="gender" width="50" sortable="false">Gender</th>
+					<th field="birthday" width="50" sortable="false">Birthday</th>
+					<th field="email" width="50" sortable="false">Email</th>
+					<th field="message" width="50" sortable="false">Message</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
 </body>
 </html>
