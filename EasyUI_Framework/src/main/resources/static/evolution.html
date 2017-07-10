@@ -96,6 +96,41 @@ $(document).ready(function() {
 	<div id="createDialogButtons">
 		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postFormAndPrint('create', 'createDialog', 'output')" style="width:90px">Create</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('createDialog')" style="width:90px">Cancel</a>
+	</div>
+	
+	<!-- Update Dialog -->
+	<div id="updateDialog" class="easyui-dialog" style="width:800px;height:400px;padding:10px 20px"
+			closed="true" buttons="#updateDialogButtons">
+		<div class="ftitle">User Information</div>
+		<div class="form">
+			<div class="fitem">
+				<label>Name:</label>
+				<input name="name" data-options="iconCls:'icon-search'" style="width:200px">
+			</div>
+			<div class="fitem">
+				<label>Gender:</label>
+				<select name="gender" style="width:200px">
+				    <option value="F">Female</option>
+				    <option value="M">Male</option>
+				</select>
+			</div>
+			<div class="fitem">
+				<label>Email:</label>
+				<input name="email">
+			</div>
+			<div class="fitem">
+				<label>Date:</label>
+				<input name="date" type="text" class="easyui-datebox" required="required">
+			</div>
+			<div class="fitem">
+				<label>Message:</label>
+				<textarea name="message" class="richTextEditor"></textarea>
+			</div>
+		</div>
+	</div>
+	<div id="updateDialogButtons">
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postFormAndPrint('update', 'updateDialog', 'output')" style="width:90px">Update</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('updateDialog')" style="width:90px">Cancel</a>
 	</div>	
 	
 	<!-- Output -->

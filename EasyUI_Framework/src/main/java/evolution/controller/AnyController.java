@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AnyController {
 	@PostMapping("/find")
 	public JsResponse<AnyPojo> find(@RequestBody AnyPojo anyPojo) throws ParseException {
+		System.out.println(anyPojo);
 		AnyPojo anyPojo0 = new AnyPojo("Chen", "M", "2017/07/30", "fslichen@126.com", "<h1>Hello World</h1>");
 		AnyPojo anyPojo1 = new AnyPojo("Ling", "F", "2017/06/29", "fslingling@126.com", "<h1>Goodbye Past</h1>");
 		List<AnyPojo> anyPojos = new LinkedList<>();
@@ -26,19 +27,22 @@ public class AnyController {
 	
 	@PostMapping("/create")
 	@SuppressWarnings("rawtypes")
-	public JsResponse<?> create() {
+	public JsResponse<?> create(@RequestBody AnyPojo anyPojo) {
+		System.out.println(anyPojo);
 		return new JsResponse("Success");
 	}
 	
 	@PostMapping("/update")
 	@SuppressWarnings("rawtypes")
-	public JsResponse<?> update() {
+	public JsResponse<?> update(@RequestBody AnyPojo anyPojo) {
+		System.out.println(anyPojo);
 		return new JsResponse("Success");
 	}
 	
 	@PostMapping("/delete")
 	@SuppressWarnings("rawtypes")
-	public JsResponse<?> delete() {
+	public JsResponse<?> delete(@RequestBody AnyPojo anyPojo) {
+		System.out.println(anyPojo);
 		return new JsResponse("Success");
 	}
 }
