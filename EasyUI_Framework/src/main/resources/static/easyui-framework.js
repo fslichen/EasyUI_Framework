@@ -39,14 +39,18 @@ function getKey(element) {
 
 function setForm(tableId, id) {// id is mostly dialog ID.
 	var row = getRow(tableId);
+	if (row == null) {// No row is selected.
+		return;
+	}
 	var columnIds = getColumnIds(tableId);
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = getKey($(this));
-		if (key != null) {
-			var value = row[key];
-			if (value != null) {
-				$(this).val(value);
-			}
+		if (key == null) {
+			return;
+		}
+		var value = row[key];
+		if (value != null) {
+			$(this).val(value);
 		}
 	});
 }
@@ -55,13 +59,14 @@ function getRequestData(id) {// id is mostly dialog ID.
 	var requestData = {};
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = getKey($(this));
-		if (key != null) {
-			var clazz = $(this).attr('class');
-			if (clazz == 'richTextEditor') {
-				requestData[key] = getRichText();
-			} else {
-				requestData[key] = $(this).val();
-			}
+		if (key == null) {
+			return;
+		}
+		var clazz = $(this).attr('class');
+		if (clazz == 'richTextEditor') {
+			requestData[key] = getRichText();
+		} else {
+			requestData[key] = $(this).val();
 		}
 	});
 	return requestData;
