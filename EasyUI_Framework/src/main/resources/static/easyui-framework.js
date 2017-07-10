@@ -112,8 +112,12 @@ function postAndPrint(url, request, tableId) {
 				responseData = this.responseGrid;
 			}
 		}
-		setResponseData(tableId, responseData);
-		print(tableId);
+		if (responseData != null) {
+			setResponseData(tableId, responseData);
+			print(tableId);
+		} else {
+			alert("Failed to receive the response data. Make sure the field name for response data is responseData, data or responseGrid.");
+		}
 	});
 }
 
