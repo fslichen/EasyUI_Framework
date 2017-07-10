@@ -15,52 +15,57 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	initialize();
-	var request = {name : 'Chen'};
-	postAndPrint('get', request, 'output');
-	var columns = getColumnIds('output');
-	for (i in columns) {
-		console.info(columns[i]);
-	}
-	console.info(getRow('output'));
 });
 </script>
 </head>
 <body>
-	<script type="text/javascript">
-		function anyFunction() {
-			var row = getRow('output');
-			deleteRows('output');
-		}
-	</script>
-	
-	<input type="button" value="Do" onclick="anyFunction()" />
-	
 	<!-- Tool Bar -->
 	<div id="toolbar">
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('create', 'Create')">Find</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="openDialog('create', 'Create', 'output')">Create</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">Update</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteRows('output')">Delete</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('findDialog', 'Find')">Find</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="openDialog('createDialog', 'Create')">Create</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="openDialog('updateDialog', 'Update', 'output')">Update</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="openDialog('deleteDialog', 'Delete', 'output')">Delete</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="deleteRows('output')">Clear</a>
 	</div>
 	
-	<!-- Output -->
-	<table id="output" title="Output" class="easyui-datagrid" style="width:700px;height:250px"
-			toolbar="#toolbar" pagination="true"
-			rownumbers="true" fitColumns="true" singleSelect="true">
-		<thead>
-			<tr>
-				<th field="firstName" width="50" sortable="true">First Name</th>
-				<th field="lastName" width="50" sortable="true">Last Name</th>
-				<th field="phone" width="50" sortable="true">Phone</th>
-				<th field="email" width="50" sortable="true">Email</th>
-			</tr>
-		</thead>
-		<tbody></tbody>
-	</table>
+	<!-- Find Dialog -->
+	<div id="findDialog" class="easyui-dialog" style="width:800px;height:400px;padding:10px 20px"
+			closed="true" buttons="#findDialogButtons">
+		<div class="ftitle">Find</div>
+		<div class="form">
+			<div class="fitem">
+				<label>Name:</label>
+				<input name="name" data-options="iconCls:'icon-search'" style="width:200px">
+			</div>
+			<div class="fitem">
+				<label>Gender:</label>
+				<select name="gender" style="width:200px">
+				    <option value="F">Female</option>
+				    <option value="M">Male</option>
+				</select>
+			</div>
+			<div class="fitem">
+				<label>Email:</label>
+				<input name="email">
+			</div>
+			<div class="fitem">
+				<label>Date:</label>
+				<input name="date" type="text" class="easyui-datebox" required="required">
+			</div>
+			<div class="fitem">
+				<label>Message:</label>
+				<textarea name="message" class="richTextEditor"></textarea>
+			</div>
+		</div>
+	</div>
+	<div id="findDialogButtons">
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postFormAndPrint('find', 'findDialog', 'output')" style="width:90px">Find</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('findDialog')" style="width:90px">Cancel</a>
+	</div>	
 
 	<!-- Create Dialog -->
-	<div id="create" class="easyui-dialog" style="width:800px;height:400px;padding:10px 20px"
-			closed="true" buttons="#createButtons">
+	<div id="createDialog" class="easyui-dialog" style="width:800px;height:400px;padding:10px 20px"
+			closed="true" buttons="#createDialogButtons">
 		<div class="ftitle">User Information</div>
 		<div class="form">
 			<div class="fitem">
@@ -88,9 +93,25 @@ $(document).ready(function() {
 			</div>
 		</div>
 	</div>
-	<div id="createButtons">
-		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postForm('post', 'create')" style="width:90px">Create</a>
-		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('create')" style="width:90px">Cancel</a>
+	<div id="createDialogButtons">
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postFormAndPrint('create', 'createDialog', 'output')" style="width:90px">Create</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('createDialog')" style="width:90px">Cancel</a>
 	</div>	
+	
+	<!-- Output -->
+	<table id="output" title="Output" class="easyui-datagrid" style="width:700px;height:250px"
+			toolbar="#toolbar" pagination="true"
+			rownumbers="true" fitColumns="true" singleSelect="true">
+		<thead>
+			<tr>
+				<th field="name" width="50" sortable="false">Name</th>
+				<th field="gender" width="50" sortable="false">Gender</th>
+				<th field="birthday" width="50" sortable="false">Birthday</th>
+				<th field="email" width="50" sortable="false">Email</th>
+				<th field="message" width="50" sortable="false">Message</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
 </body>
 </html>

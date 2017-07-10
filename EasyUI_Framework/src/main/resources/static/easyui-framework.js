@@ -10,7 +10,7 @@ function getRichText() {
 	return tinymce.activeEditor.getContent();
 }
 
-function fillInForm(tableId, id) {
+function fillInForm(tableId, id) {// id is mostly dialog ID.
 	var row = getRow(tableId);
 	var columnIds = getColumnIds(tableId);
 	$('#' + id).find(formElements).each(function() {
@@ -21,7 +21,7 @@ function fillInForm(tableId, id) {
 	});
 }
 
-function getForm(id) {
+function getForm(id) {// id is mostly dialog ID.
 	var data = {};
 	$('#' + id).find(formElements).each(function() {
 		var key = $(this).attr('name');
@@ -35,7 +35,7 @@ function getForm(id) {
 	return data;
 }
 
-function postForm(url, id, callBack) {
+function postForm(url, id, callBack) {// id is mostly dialog ID.
 	post(url, getForm(id), callBack);
 }
 
@@ -63,8 +63,8 @@ function postAndPrint(url, request, tableId) {
 	});
 }
 
-function postFormAndPrint(url, id, tableId) {
-	sendAndPrint(url, getForm(id), tableId);
+function postFormAndPrint(url, id, tableId) {// id is mostly dialog ID.
+	postAndPrint(url, getForm(id), tableId);
 }
 
 function getColumnIds(tableId) {
@@ -89,10 +89,6 @@ function openDialog(dialogId, title, tableId) {
 
 function closeDialog(dialogId) {
 	$('#' + dialogId).dialog('close');
-}
-
-function clearForm(formId) {
-	$('#' + formId).form('clear');
 }
 
 function getRow(tableId) {
