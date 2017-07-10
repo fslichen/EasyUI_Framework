@@ -1,18 +1,5 @@
 var data;
 
-// Setters and Getters
-function setResponseData(tableId, responseData) {
-	data.responseData[tableId] = responseData;
-}
-
-function getResponseData(tableId) {
-	return data.responseData[tableId];
-}
-
-function getFormElements() {
-	return data['formElements'];
-}
-
 // Constructor
 function initialize() {
 	data = {};
@@ -38,36 +25,50 @@ function getRichText() {
 }
 
 // Form
+function getFormElements() {
+	return data['formElements'];
+}
+
+function getKey(element) {
+	var key = element.attr('name');
+	if (key == null) {
+		key = element.attr('textboxname');
+	}
+	return key;
+}
+
 function setForm(tableId, id) {// id is mostly dialog ID.
 	var row = getRow(tableId);
 	var columnIds = getColumnIds(tableId);
 	$('#' + id).find(getFormElements()).each(function() {
-		var value = row[$(this).attr('name')];
-		if (value != null) {
-			$(this).val(value);
+		var key = getKey($(this));
+		if (key != null) {
+			var value = row[key];
+			if (value != null) {
+				$(this).val(value);
+			}
 		}
 	});
 }
 
-function getForm(id) {// id is mostly dialog ID.
+function getRequestData(id) {// id is mostly dialog ID.
 	var requestData = {};
 	$('#' + id).find(getFormElements()).each(function() {
-		var key = $(this).attr('name');
-		if (key == null) {
-			key = $(this).attr('textboxname');
-		}
-		var clazz = $(this).attr('class');
-		if (clazz == 'richTextEditor') {
-			requestData[key] = getRichText();
-		} else {
-			requestData[key] = $(this).val();
+		var key = getKey($(this));
+		if (key != null) {
+			var clazz = $(this).attr('class');
+			if (clazz == 'richTextEditor') {
+				requestData[key] = getRichText();
+			} else {
+				requestData[key] = $(this).val();
+			}
 		}
 	});
 	return requestData;
 }
 
 function postForm(url, id, callBack) {// id is mostly dialog ID.
-	post(url, getForm(id), callBack);
+	post(url, getRequestData(id), callBack);
 }
 
 // Post
@@ -125,7 +126,7 @@ function postAndPrint(url, request, tableId) {
 }
 
 function postFormAndPrint(url, id, tableId) {// id is mostly dialog ID.
-	postAndPrint(url, getForm(id), tableId);
+	postAndPrint(url, getRequestData(id), tableId);
 }
 
 // Output
@@ -148,6 +149,14 @@ function getRow(tableId) {
 
 function deleteRows(tableId) {
 	$('#' + tableId).datagrid('loadData', []);
+}
+
+function setResponseData(tableId, responseData) {
+	data.responseData[tableId] = responseData;
+}
+
+function getResponseData(tableId) {
+	return data.responseData[tableId];
 }
 
 // Dialog
