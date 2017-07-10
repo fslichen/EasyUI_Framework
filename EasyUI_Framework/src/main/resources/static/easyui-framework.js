@@ -53,6 +53,9 @@ function getForm(id) {// id is mostly dialog ID.
 	var requestData = {};
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = $(this).attr('name');
+		if (key == null) {
+			key = $(this).attr('textboxname');
+		}
 		var clazz = $(this).attr('class');
 		if (clazz == 'richTextEditor') {
 			requestData[key] = getRichText();
