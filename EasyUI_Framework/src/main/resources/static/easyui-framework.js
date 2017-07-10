@@ -48,6 +48,10 @@ function post(url, request, callBack) {
 	    dataType : 'json',
 	    async : true,
 	    success : function(response) {
+	    		var message = response.message;
+	    		if (message != null) {
+	    			alert(message);
+	    		}
 	    		if (callBack != null) {
 	    			callBack.call(response);// Call passes the argument to this object in the call back function.
 	    		}
@@ -57,8 +61,10 @@ function post(url, request, callBack) {
 
 function postAndPrint(url, request, tableId) {
 	post(url, request, function() {
-		for (var i = 0; i < this.length; i++) {
-			addRow(tableId, this[i]);
+		var data = this.data;
+		deleteRows(tableId);
+		for (var i = 0; i < data.length; i++) {
+			addRow(tableId, data[i]);
 		}
 	});
 }
