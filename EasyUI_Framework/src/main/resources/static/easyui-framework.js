@@ -145,7 +145,18 @@ function getColumnIds(tableId) {
 }
 
 function addRow(tableId, row) {
-	$('#' + tableId).datagrid('appendRow', row);
+	var rowExcerpt = {};
+	var columnIds = getColumnIds(tableId);
+	for (var i = 0; i < columnIds.length; i++) {
+		var columnId = columnIds[i];
+		var field = row[columnId];
+		if (field != null) {
+			rowExcerpt[columnId] = field;
+		} else {
+			rowExcerpt[columnId] = ""; 
+		}
+	}
+	$('#' + tableId).datagrid('appendRow', rowExcerpt);
 }
 
 function getRow(tableId) {
