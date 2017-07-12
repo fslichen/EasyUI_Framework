@@ -2,9 +2,11 @@ var data;
 
 // Constructor
 function initialize() {
+	// Data
 	data = {};
 	data['responseData'] = {};
 	data['formElements'] = 'input, select, textarea';// TODO Add more elements.
+	// Rich Text Editor
 	tinymce.init({
 		selector : '.richTextEditor'
 	});
@@ -15,6 +17,16 @@ function setPagination(tableId, paginationId) {
 	$('#' + paginationId).pagination({
 		onSelectPage : function(pageIndex, pageSize) {
 			print(tableId, pageIndex, pageSize);
+		}
+	});
+}
+
+function sort(objects, sortField, order) {
+	return objects.sort(function(a, b) {
+		if (order == null || order == true) {
+			return a[sortField] - b[sortField];
+		} else {
+			return b[sortField] - a[sortField];
 		}
 	});
 }

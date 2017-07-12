@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="easyui-framework.js"></script>
+<script type="text/javascript">
+	function sortObjects() {
+		var array = sort([{name : 'Chen', age : 27}, {name : 'Ling', age : 26}], 'age', true);
+		alert(JSON.stringify(array));
+	}
+</script>
+</head>
+<body>
+	<input type="button" value="Click" onclick="sortObjects()" />
+</body>
+</html>
