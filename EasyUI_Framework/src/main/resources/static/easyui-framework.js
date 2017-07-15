@@ -144,6 +144,8 @@ function post(url, request, callBack) {
 	    	}
 	    }
 	});
+	// Clear Form Data
+	tinymce.activeEditor.setContent('');
 }
 
 // Print
