@@ -12,10 +12,18 @@ function initialize() {
 	});
 	// Initialize pagination for each one of the data grid.
 	$('.easyui-datagrid').each(function() {
-		$('#' + $(this).attr('id') + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
+		var tableId = $(this).attr('id');
+		$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
 			onSelectPage : function(pageIndex, pageSize) {
 				print(tableId, pageIndex, pageSize);
 			}
+		});
+	});
+	// Sortable
+	$('span.datagrid-sort-icon').each(function() {
+		$(this).click(function() {
+			var key = $(this).parent().parent().attr('field');
+			alert('Why do you click me? Do you want to sort ' + key);
 		});
 	});
 }
@@ -40,7 +48,6 @@ function getKey(element) {// Get either name or text box name.
 function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog ID.
 	var selectedRowExists = true;
 	var selectedRow = getSelectedRow(tableId);
-	var columnIds = getColumnIds(tableId);
 	if (selectedRow == null || getRowCount(tableId) == 0) {// No row is selected.
 		selectedRowExists = false;
 	}
@@ -146,7 +153,7 @@ function postFormAndPrint(url, id, tableId) {// ID is mostly dialog ID.
 }
 
 // Output
-function getColumnIds(tableId) {
+function getColumnKeys(tableId) {
 	var ths = $('#' + tableId + 'th');
 	var columns = [];
 	$('th').each(function() {
@@ -161,14 +168,14 @@ function getRowCount(tableId) {
 
 function addRow(tableId, row) {
 	var rowExcerpt = {};
-	var columnIds = getColumnIds(tableId);
-	for (var i = 0; i < columnIds.length; i++) {
-		var columnId = columnIds[i];
-		var columnValue = row[columnId];
+	var columnKeys = getColumnKeys(tableId);
+	for (var i = 0; i < columnKeys.length; i++) {
+		var columnKey = columnKeys[i];
+		var columnValue = row[columnKey];
 		if (columnValue != null) {
-			rowExcerpt[columnId] = columnValue;
+			rowExcerpt[columnKey] = columnValue;
 		} else {
-			rowExcerpt[columnId] = null; 
+			rowExcerpt[columnKey] = null; 
 		}
 	}
 	$('#' + tableId).datagrid('appendRow', rowExcerpt);
