@@ -67,8 +67,12 @@ function parent($object, generation) {
 }
 
 // Form
-function getRichText() {
+function getActiveRichText() {
 	return tinymce.activeEditor.getContent();
+}
+
+function getRichText(id) {// ID is mostly text area name.
+	return tinymce.get(id).getContent();
 }
 
 function getFormElements() {
@@ -110,7 +114,7 @@ function getRequestData(id) {// ID is mostly dialog ID.
 		if (key != null) {
 			var clazz = $(this).attr('class');
 			if (clazz == 'richTextEditor') {
-				requestData[key] = getRichText();
+				requestData[key] = getActiveRichText();
 			} else {
 				requestData[key] = $(this).val();
 			}
