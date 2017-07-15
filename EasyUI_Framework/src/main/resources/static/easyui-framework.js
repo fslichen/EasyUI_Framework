@@ -4,7 +4,9 @@ var data;// It has a map structure.
 function initialize() {
 	// Initialize Data
 	data = {};
+	data['clickCount'] = {};
 	data['responseData'] = {};
+	data['pagination'] = {};
 	data['formElements'] = 'input, select, textarea, button';
 	// Initialize rich text editors.
 	tinymce.init({
@@ -20,12 +22,41 @@ function initialize() {
 		});
 	});
 	// Sortable
-	$('span.datagrid-sort-icon').each(function() {
+	$('div.datagrid-cell').each(function() {
 		$(this).click(function() {
-			var key = $(this).parent().parent().attr('field');
-			alert('Why do you click me? Do you want to sort ' + key);
+			var sortField = $(this).parent().attr('field');
+			var tableId = parent($(this), 7).next('table').attr('id');
+			var firstIndex = data.pagination[tableId].firstIndex;
+			var lastIndex = data.pagination[tableId].lastIndex;
+			var clickCount = data.clickCount[tableId];
+			if (clickCount == null) {
+				var initialClickCount = {};
+				var columnKeys = getColumnKeys(tableId);
+				for (var i = 0; i < columnKeys.length; i++) {
+					initialClickCount[columnKeys[i]] = 0;
+				}
+				data.clickCount[tableId] = initialClickCount;
+			}
+			var sortFieldClickCount = data.clickCount[tableId][sortField]++;
+			var responseData = getResponseData(tableId);
+			var responseDataExcerpt = [];
+			for (var i = firstIndex; i < lastIndex; i++) {
+				responseDataExcerpt.push(responseData[i]);
+			}
+			responseDataExcerpt = sort(responseDataExcerpt, sortField, sortFieldClickCount %2 == 0);
+			deleteRows(tableId);
+			for (var i = 0; i < lastIndex - firstIndex; i++) {
+				addRow(tableId, responseDataExcerpt[i]);
+			}
 		});
 	});
+}
+
+function parent($object, generation) {
+	for (var i = 0; i < generation; i++) {
+		$object = $object.parent();
+	}
+	return $object;
 }
 
 // Form
@@ -119,13 +150,16 @@ function print(tableId, pageIndex, pageSize) {
 	if (pageSize == null) {
 		pageSize = 10;
 	}
+	var firstIndex = (pageIndex - 1) * pageSize;
+	var lastIndex = Math.min(pageIndex * pageSize, responseData.length);
+	data.pagination[tableId] = {'firstIndex' : firstIndex, 'lastIndex' : lastIndex};
 	$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
 	    total : responseData.length,
 	    pageSize : pageSize
 	});
 	// Print Response Data
 	deleteRows(tableId);
-	for (var i = (pageIndex - 1) * pageSize; i < Math.min(pageIndex * pageSize, responseData.length); i++) {
+	for (var i = firstIndex; i < lastIndex; i++) {
 		addRow(tableId, responseData[i]);
 	}
 }
@@ -183,11 +217,15 @@ function addRow(tableId, row) {
 
 function sort(objects, sortField, order) {
 	return objects.sort(function(a, b) {
-		if (order == null || order == true) {
-			return a[sortField] - b[sortField];// Ascending
-		} else {
-			return b[sortField] - a[sortField];// Descending
+		var x = a[sortField];
+		var y = b[sortField];
+		var result;
+		if (typeof x === 'string' && typeof y === 'string') {
+			result = x.localeCompare(y);
+		} else if (typeof x === 'number' && typeof y === 'number') {
+			result = x - y;
 		}
+		return (order == null || order == true) ? result : result * -1;
 	});
 }
 
