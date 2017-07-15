@@ -29,13 +29,20 @@ function initialize() {
 			var firstIndex = data.pagination[tableId].firstIndex;
 			var lastIndex = data.pagination[tableId].lastIndex;
 			var clickCount = data.clickCount[tableId];
+			var columnKeys = getColumnKeys(tableId);
 			if (clickCount == null) {
 				var initialClickCount = {};
-				var columnKeys = getColumnKeys(tableId);
 				for (var i = 0; i < columnKeys.length; i++) {
 					initialClickCount[columnKeys[i]] = 0;
 				}
 				data.clickCount[tableId] = initialClickCount;
+			} else {
+				for (var i = 0; i < columnKeys.length; i++) {
+					var columnKey = columnKeys[i];
+					if (columnKey != sortField) {
+						data.clickCount[tableId][columnKey] = 0;
+					}
+				}
 			}
 			var sortFieldClickCount = data.clickCount[tableId][sortField]++;
 			var responseData = getResponseData(tableId);
