@@ -15,7 +15,6 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	initialize();
-	setPagination('output', 'outputPagination');
 });
 </script>
 </head>
@@ -50,8 +49,8 @@ $(document).ready(function() {
 				<input name="email">
 			</div>
 			<div class="fitem">
-				<label>Date:</label>
-				<input name="date" type="text" class="easyui-datebox" required="required">
+				<label>Birthday:</label>
+				<input name="birthday" type="text" class="easyui-datebox" required="required">
 			</div>
 			<div class="fitem">
 				<label>Message:</label>
@@ -85,7 +84,7 @@ $(document).ready(function() {
 				<input name="email">
 			</div>
 			<div class="fitem">
-				<label>Date:</label>
+				<label>Birthday:</label>
 				<input name="birthday" type="text" class="easyui-datebox" required="required">
 			</div>
 			<div class="fitem">
@@ -120,7 +119,7 @@ $(document).ready(function() {
 				<input name="email">
 			</div>
 			<div class="fitem">
-				<label>Date:</label>
+				<label>Birthday:</label>
 				<input name="birthday" type="text" class="easyui-datebox" required="required">
 			</div>
 			<div class="fitem">
@@ -142,7 +141,7 @@ $(document).ready(function() {
 		<!-- Pagination -->
 		<div id="outputPagination" class="easyui-pagination"
 			style="background: #efefef; border: 1px solid #ccc;"
-			data-options="total:2000,pageSize:10">
+			data-options="total:0,pageSize:10">
 		</div>
 		<!-- Output -->
 		<table id="output" title="Output" class="easyui-datagrid"

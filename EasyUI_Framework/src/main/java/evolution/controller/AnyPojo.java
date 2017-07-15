@@ -10,7 +10,6 @@ public class AnyPojo {
 
 	}
 	public AnyPojo(String name, String gender, String birthday, String email, String message) {
-		super();
 		this.name = name;
 		this.gender = gender;
 		this.birthday = birthday;

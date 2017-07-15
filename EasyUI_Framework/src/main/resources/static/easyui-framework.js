@@ -1,47 +1,35 @@
-var data;
+var data;// It has a map structure.
 
 // Constructor
 function initialize() {
-	// Data
+	// Initialize Data
 	data = {};
 	data['responseData'] = {};
-	data['formElements'] = 'input, select, textarea';// TODO Add more elements.
-	// Rich Text Editor
+	data['formElements'] = 'input, select, textarea, button';
+	// Initialize rich text editors.
 	tinymce.init({
-		selector : '.richTextEditor'
+		selector : '.richTextEditor'// Rich text editor is created by setting class attribute as richTextEditor in text area.
+	});
+	// Initialize pagination for each one of the data grid.
+	$('.easyui-datagrid').each(function() {
+		$('#' + $(this).attr('id') + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
+			onSelectPage : function(pageIndex, pageSize) {
+				print(tableId, pageIndex, pageSize);
+			}
+		});
 	});
 }
 
-// Pagination
-function setPagination(tableId, paginationId) {
-	$('#' + paginationId).pagination({
-		onSelectPage : function(pageIndex, pageSize) {
-			print(tableId, pageIndex, pageSize);
-		}
-	});
-}
-
-function sort(objects, sortField, order) {
-	return objects.sort(function(a, b) {
-		if (order == null || order == true) {
-			return a[sortField] - b[sortField];
-		} else {
-			return b[sortField] - a[sortField];
-		}
-	});
-}
-
-// Rich Text Editor
+// Form
 function getRichText() {
 	return tinymce.activeEditor.getContent();
 }
 
-// Form
 function getFormElements() {
 	return data['formElements'];
 }
 
-function getKey(element) {
+function getKey(element) {// Get either name or text box name.
 	var key = element.attr('name');
 	if (key == null) {
 		key = element.attr('textboxname');
@@ -49,42 +37,46 @@ function getKey(element) {
 	return key;
 }
 
-function setForm(tableId, id) {// id is mostly dialog ID.
-	var row = getRow(tableId);
-	if (row == null) {// No row is selected.
-		return;
-	}
+function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog ID.
+	var selectedRowExists = true;
+	var selectedRow = getSelectedRow(tableId);
 	var columnIds = getColumnIds(tableId);
+	if (selectedRow == null || getRowCount(tableId) == 0) {// No row is selected.
+		selectedRowExists = false;
+	}
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = getKey($(this));
-		if (key == null) {
-			return;
-		}
-		var value = row[key];
-		if (value != null) {
+		if (key != null) {
+			var value = null;
+			if (selectedRowExists) {
+				value = selectedRow[key];
+			}
 			$(this).val(value);
+		} else {
+			console.info('The key for form element ' + JSON.stringify($(this)) + ' should not be empty.');
 		}
 	});
 }
 
-function getRequestData(id) {// id is mostly dialog ID.
+function getRequestData(id) {// ID is mostly dialog ID.
 	var requestData = {};
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = getKey($(this));
-		if (key == null) {
-			return;
-		}
-		var clazz = $(this).attr('class');
-		if (clazz == 'richTextEditor') {
-			requestData[key] = getRichText();
+		if (key != null) {
+			var clazz = $(this).attr('class');
+			if (clazz == 'richTextEditor') {
+				requestData[key] = getRichText();
+			} else {
+				requestData[key] = $(this).val();
+			}
 		} else {
-			requestData[key] = $(this).val();
+			console.info('The key for form element ' + JSON.stringify($(this)) + ' should not be empty.');
 		}
 	});
 	return requestData;
 }
 
-function postForm(url, id, callBack) {// id is mostly dialog ID.
+function postForm(url, id, callBack) {// ID is mostly dialog ID.
 	post(url, getRequestData(id), callBack);
 }
 
@@ -98,27 +90,34 @@ function post(url, request, callBack) {
 	    dataType : 'json',
 	    async : true,
 	    success : function(response) {
-	    		var message = response.message;
-	    		if (message != null) {
-	    			alert(message);
-	    		}
-	    		if (callBack != null) {
-	    			callBack.call(response);// Call passes the argument to this object in the call back function.
-	    		}
+	    	var message = response.message;
+	    	if (message != null) {
+	    		alert(message);
+	    	}
+	    	if (callBack != null) {
+	    		callBack.call(response);// Call passes the response argument to 'this' object in the call back function.
+	    	}
 	    }
 	});
 }
 
 // Print
 function print(tableId, pageIndex, pageSize) {
-	deleteRows(tableId);
-	var responseData = getResponseData(tableId);// Specify the ID.
+	// Get Response Data
+	var responseData = getResponseData(tableId);
+	// Set Pagination
 	if (pageIndex == null) {
 		pageIndex = 1;
 	}
 	if (pageSize == null) {
 		pageSize = 10;
 	}
+	$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
+	    total : responseData.length,
+	    pageSize : pageSize
+	});
+	// Print Response Data
+	deleteRows(tableId);
 	for (var i = (pageIndex - 1) * pageSize; i < Math.min(pageIndex * pageSize, responseData.length); i++) {
 		addRow(tableId, responseData[i]);
 	}
@@ -126,23 +125,23 @@ function print(tableId, pageIndex, pageSize) {
 
 function postAndPrint(url, request, tableId) {
 	post(url, request, function() {
-		var responseData = this.responseData;
+		var responseData = this.responseData;// The field name for response data is 'responseData'.
 		if (responseData == null) {
-			responseData = this.data;
+			responseData = this.data;// The secondary field name for response data is 'data'.
 			if (responseData == null) {
-				responseData = this.responseGrid;
+				responseData = this.responseGrid;// The last field name for response data is 'responseGrid'.
 			}
 		}
 		if (responseData != null) {
-			setResponseData(tableId, responseData);
+			setResponseData(tableId, responseData);// Set the response data for a given data grid.
 			print(tableId);
 		} else {
-			alert("Failed to receive the response data. Make sure the field name for response data is responseData, data or responseGrid.");
+			alert("Failed to receive the response data. Make sure the field name for response data is 'responseData', 'data' or 'responseGrid'.");
 		}
 	});
 }
 
-function postFormAndPrint(url, id, tableId) {// id is mostly dialog ID.
+function postFormAndPrint(url, id, tableId) {// ID is mostly dialog ID.
 	postAndPrint(url, getRequestData(id), tableId);
 }
 
@@ -156,22 +155,36 @@ function getColumnIds(tableId) {
 	return columns;
 }
 
+function getRowCount(tableId) {
+	return $('#' + tableId).datagrid('getData').total;
+}
+
 function addRow(tableId, row) {
 	var rowExcerpt = {};
 	var columnIds = getColumnIds(tableId);
 	for (var i = 0; i < columnIds.length; i++) {
 		var columnId = columnIds[i];
-		var field = row[columnId];
-		if (field != null) {
-			rowExcerpt[columnId] = field;
+		var columnValue = row[columnId];
+		if (columnValue != null) {
+			rowExcerpt[columnId] = columnValue;
 		} else {
-			rowExcerpt[columnId] = ""; 
+			rowExcerpt[columnId] = null; 
 		}
 	}
 	$('#' + tableId).datagrid('appendRow', rowExcerpt);
 }
 
-function getRow(tableId) {
+function sort(objects, sortField, order) {
+	return objects.sort(function(a, b) {
+		if (order == null || order == true) {
+			return a[sortField] - b[sortField];// Ascending
+		} else {
+			return b[sortField] - a[sortField];// Descending
+		}
+	});
+}
+
+function getSelectedRow(tableId) {
 	return $('#' + tableId).datagrid('getSelected');
 }
 
@@ -180,18 +193,18 @@ function deleteRows(tableId) {
 }
 
 function setResponseData(tableId, responseData) {
-	data.responseData[tableId] = responseData;
+	data.responseData[tableId] = responseData;// Each data grid has its own response data.
 }
 
 function getResponseData(tableId) {
-	return data.responseData[tableId];
+	return data.responseData[tableId];// Each data grid has its own response data.
 }
 
 // Dialog
 function openDialog(dialogId, title, tableId) {
 	$('#' + dialogId).dialog('open').dialog('setTitle', title);
 	if (tableId != null) {
-		setForm(tableId, dialogId);
+		setForm(tableId, dialogId);// Plug the data in the selected row into the form.
 	}
 }
 
