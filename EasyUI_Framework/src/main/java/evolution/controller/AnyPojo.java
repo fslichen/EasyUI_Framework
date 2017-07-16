@@ -1,15 +1,21 @@
 package evolution.controller;
 
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class AnyPojo {
 	private String name;
 	private String gender;
-	private String birthday;
+	@DateTimeFormat
+	private Date birthday;
 	private String email;
 	private String message;
 	public AnyPojo() {
 
 	}
-	public AnyPojo(String name, String gender, String birthday, String email, String message) {
+	public AnyPojo(String name, String gender, Date birthday, String email, String message) {
+		super();
 		this.name = name;
 		this.gender = gender;
 		this.birthday = birthday;
@@ -40,10 +46,10 @@ public class AnyPojo {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public String getBirthday() {
+	public Date getBirthday() {
 		return birthday;
 	}
-	public void setBirthday(String birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
 	@Override
