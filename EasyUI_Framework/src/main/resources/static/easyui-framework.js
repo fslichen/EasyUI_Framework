@@ -66,15 +66,24 @@ function parent($object, generation) {
 	return $object;
 }
 
-// Form
+// Rich Text Editor
 function getActiveRichText() {
 	return tinymce.activeEditor.getContent();
 }
 
-function getRichText(id) {// ID is mostly text area name.
-	return tinymce.get(id).getContent();
+function getRichText(name) {// Name is mostly text area name.
+	return tinymce.get(name).getContent();
 }
 
+function setRichText(name, richText) {
+	tinymce.get(name).setContent(richText);
+}
+
+function setActiveRichText(richText) {
+	tinymce.activeEditor.setContent(richText);
+}
+
+//Form
 function getFormElements() {
 	return data['formElements'];
 }
@@ -199,6 +208,8 @@ function setField(field, value) {
 	var fieldClass = field.attr('class');
 	if (fieldClass != null && (includes(fieldClass, 'easyui-textbox') || includes(fieldClass, 'easyui-datebox'))) {
 		field.textbox('setText', value);
+	} else if (fieldClass == 'richTextEditor') {
+		setActiveRichText(value);
 	} else {
 		field.val(value);
 	}
