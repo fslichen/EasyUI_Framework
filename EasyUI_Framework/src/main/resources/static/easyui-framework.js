@@ -127,11 +127,7 @@ function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog 
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = getKey($(this));
 		if (key != null) {
-			var value = null;
-			if (selectedRowExists) {
-				value = selectedRow[key];
-			}
-			setField($(this), value);
+			setField($(this), selectedRow[key]);
 		} else {
 			console.info('The key for form element ' + JSON.stringify($(this)) + ' should not be empty.');
 		}
