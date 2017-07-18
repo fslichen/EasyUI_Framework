@@ -100,7 +100,7 @@ function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog 
 			if (selectedRowExists) {
 				value = selectedRow[key];
 			}
-			$(this).val(value);
+			setField($(this), value);
 		} else {
 			console.info('The key for form element ' + JSON.stringify($(this)) + ' should not be empty.');
 		}
@@ -125,27 +125,23 @@ function getRequestData(id) {// ID is mostly dialog ID.
 	return requestData;
 }
 
-function postForm(url, id, callBack) {// ID is mostly dialog ID.
-	post(url, getRequestData(id), callBack);
-}
-
 // Post
 function post(url, request, callBack) {
 	$.ajax({
-	    url : url,
-	    type : 'POST',
-	    data : JSON.stringify(request),
-	    contentType : 'application/json;charset=utf-8',
-	    dataType : 'json',
-	    async : true,
-	    success : function(response) {
-	    	var message = response.message;
-	    	if (message != null) {
-	    		alert(message);
-	    	}
-	    	if (callBack != null) {
-	    		callBack.call(response);// Call passes the response argument to 'this' object in the call back function.
-	    	}
+		    url : url,
+		    type : 'POST',
+		    data : JSON.stringify(request),
+		    contentType : 'application/json;charset=utf-8',
+		    dataType : 'json',
+		    async : true,
+		    success : function(response) {
+		    	var message = response.message;
+		    	if (message != null) {
+		    		alert(message);
+		    	}
+		    	if (callBack != null) {
+		    		callBack.call(response);// Call passes the response argument to 'this' object in the call back function.
+		    	}
 	    }
 	});
 	// Clear Form Data
@@ -195,8 +191,27 @@ function postAndPrint(url, request, tableId) {
 	});
 }
 
+function includes(string, substring) {
+	return string.indexOf(substring) !== -1;
+}
+
+function setField(field, value) {
+	var fieldClass = field.attr('class');
+	if (fieldClass != null && (includes(fieldClass, 'easyui-textbox') || includes(fieldClass, 'easyui-datebox'))) {
+		field.textbox('setText', value);
+	} else {
+		field.val(value);
+	}
+}
+
+function postForm(url, id) {// ID is mostly dialog ID.
+	post(url, getRequestData(id));
+	closeDialog(id);
+}
+
 function postFormAndPrint(url, id, tableId) {// ID is mostly dialog ID.
 	postAndPrint(url, getRequestData(id), tableId);
+	closeDialog(id);
 }
 
 // Output
@@ -246,8 +261,29 @@ function getSelectedRow(tableId) {
 	return $('#' + tableId).datagrid('getSelected');
 }
 
-function deleteRows(tableId) {
-	$('#' + tableId).datagrid('loadData', []);
+function deleteRows(tableIds) {
+	function deleteRowsByTableId(tableId) {
+		$('#' + tableId).datagrid('loadData', []);
+	}
+	if (tableIds instanceof Array) {
+		for (var i = 0; i < tableIds.length; i++) {
+			deleteRowsByTableId(tableIds[i]);
+		}
+	} else {
+		deleteRowsByTableId(tableIds);
+	}
+}
+
+function alterTable(tableId, columnMap) {
+	deleteRows(tableId);
+	var fieldArray = [];
+	for (i in columnMap) {
+		var columnEntry = {field : i, title : columnMap[i], width : 50, sortable : true};
+		fieldArray.push(columnEntry);
+	}
+	$('#' + tableId).datagrid({
+	    columns : [fieldArray]
+	});
 }
 
 function setResponseData(tableId, responseData) {
