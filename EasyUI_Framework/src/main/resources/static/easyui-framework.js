@@ -88,7 +88,30 @@ function getFormElements() {
 	return data['formElements'];
 }
 
-function getKey(element) {// Get either name or text box name.
+function validateForm(id) {// ID is mostly dialog ID.
+	var validForm = true;
+	$('#'+id).find(getFormElements()).each(function() {
+		var fieldClass = $(this).attr('class');
+		var required = $(this).attr('required');
+		if (required != null && required == 'required') {
+			var fieldValue = null;
+			if (isEasyUiField(fieldClass)) {
+				fieldValue = $(this).textbox('getText');
+			} else if (fieldClass == 'richTextEditor') {
+				fieldValue = getActiveRichText();
+			} else {
+				fieldValue = $(this).val();
+			}
+			if (fieldValue == null || fieldValue == '') {
+				alert(getKey($(this)) + ' should not be null.');
+				validForm = false;
+			}
+		}
+	});
+	return validForm;
+}
+
+function getKey(element) {// Get either name or easy-ui text box name.
 	var key = element.attr('name');
 	if (key == null) {
 		key = element.attr('textboxname');
@@ -97,10 +120,9 @@ function getKey(element) {// Get either name or text box name.
 }
 
 function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog ID.
-	var selectedRowExists = true;
 	var selectedRow = getSelectedRow(tableId);
 	if (selectedRow == null || getRowCount(tableId) == 0) {// No row is selected.
-		selectedRowExists = false;
+		return;
 	}
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = getKey($(this));
@@ -201,12 +223,16 @@ function postAndPrint(url, request, tableId) {
 }
 
 function includes(string, substring) {
-	return string.indexOf(substring) !== -1;
+	return string != null && substring != null && string.indexOf(substring) !== -1;
+}
+
+function isEasyUiField(fieldClass) {
+	return includes(fieldClass, 'easyui-textbox') || includes(fieldClass, 'easyui-datebox');
 }
 
 function setField(field, value) {
 	var fieldClass = field.attr('class');
-	if (fieldClass != null && (includes(fieldClass, 'easyui-textbox') || includes(fieldClass, 'easyui-datebox'))) {
+	if (isEasyUiField(fieldClass)) {
 		field.textbox('setText', value);
 	} else if (fieldClass == 'richTextEditor') {
 		setActiveRichText(value);
@@ -216,11 +242,17 @@ function setField(field, value) {
 }
 
 function postForm(url, id) {// ID is mostly dialog ID.
+	if (!validateForm(id)) {
+		return;
+	}
 	post(url, getRequestData(id));
 	closeDialog(id);
 }
 
 function postFormAndPrint(url, id, tableId) {// ID is mostly dialog ID.
+	if (!validateForm(id)) {
+		return;
+	}
 	postAndPrint(url, getRequestData(id), tableId);
 	closeDialog(id);
 }
