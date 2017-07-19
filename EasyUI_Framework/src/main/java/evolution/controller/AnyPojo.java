@@ -11,6 +11,8 @@ public class AnyPojo {
 	private Date birthday;
 	private String email;
 	private String message;
+	private Date startDate;
+	private Date endDate;
 	public AnyPojo() {
 
 	}
@@ -21,6 +23,18 @@ public class AnyPojo {
 		this.birthday = birthday;
 		this.email = email;
 		this.message = message;
+	}
+	public Date getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 	public String getName() {
 		return name;
@@ -55,6 +69,6 @@ public class AnyPojo {
 	@Override
 	public String toString() {
 		return "AnyPojo [name=" + name + ", gender=" + gender + ", birthday=" + birthday + ", email=" + email
-				+ ", message=" + message + "]";
+				+ ", message=" + message + ", startDate=" + startDate + ", endDate=" + endDate + "]";
 	}
 }

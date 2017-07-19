@@ -118,21 +118,25 @@ function values(object) {
 	return result;
 }
 
+function getFieldValue(field) {
+	var fieldClass = field.attr('class');
+	if (isEasyUiField(fieldClass)) {
+		return field.textbox('getText');
+	} else if (fieldClass == 'richTextEditor') {
+		return getActiveRichText();
+	} else {
+		return field.val();
+	}
+}
+
 function validateForm(id) {// ID is mostly dialog ID.
 	var fieldMap = {};
 	var isValidForm = true;
 	$('#'+id).find(getFormElements()).each(function() {
 		// Field Info
 		var fieldKey = getKey($(this));
-		var fieldValue = null;
 		var fieldClass = $(this).attr('class');
-		if (isEasyUiField(fieldClass)) {
-			fieldValue = $(this).textbox('getText');
-		} else if (fieldClass == 'richTextEditor') {
-			fieldValue = getActiveRichText();
-		} else {
-			fieldValue = $(this).val();
-		}
+		var fieldValue = getFieldValue($(this));
 		// Not Null Validation
 		var required = $(this).attr('required');
 		if (required != null && required == 'required') {
@@ -221,8 +225,6 @@ function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog 
 		var key = getKey($(this));
 		if (key != null) {
 			setField($(this), selectedRow[key]);
-		} else {
-			console.info('The key for form element ' + JSON.stringify($(this)) + ' should not be empty.');
 		}
 	});
 }
@@ -232,14 +234,7 @@ function getRequestData(id) {// ID is mostly dialog ID.
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = getKey($(this));
 		if (key != null) {
-			var clazz = $(this).attr('class');
-			if (clazz == 'richTextEditor') {
-				requestData[key] = getActiveRichText();
-			} else {
-				requestData[key] = $(this).val();
-			}
-		} else {
-			console.info('The key for form element ' + JSON.stringify($(this)) + ' should not be empty.');
+			requestData[key] = getFieldValue($(this));
 		}
 	});
 	return requestData;
@@ -270,9 +265,7 @@ function post(url, requestData, callBack) {
 	// Clear Form Data
 	try {
 		tinymce.activeEditor.setContent('');
-	} catch (e) {
-		console.info('The active rich text editor is unavailable.');
-	}
+	} catch (e) {}
 }
 
 // Print
@@ -343,18 +336,20 @@ function setField(field, value) {
 
 function postForm(url, id) {// ID is mostly dialog ID.
 	if (!validateForm(id)) {
-		return;
+		return false;
 	}
 	post(url, getRequestData(id));
 	closeDialog(id);
+	return true;
 }
 
 function postFormAndPrint(url, id, tableId) {// ID is mostly dialog ID.
 	if (!validateForm(id)) {
-		return;
+		return false;
 	}
 	postAndPrint(url, getRequestData(id), tableId);
 	closeDialog(id);
+	return true;
 }
 
 // Output
