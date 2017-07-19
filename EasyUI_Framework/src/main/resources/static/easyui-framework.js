@@ -216,6 +216,14 @@ function getKey(element) {// Get either name or easy-ui text box name.
 	return key;
 }
 
+function getIndex(string) {
+	return Number(string.charAt(string.length - 1));// TOOD Up To 10 Indexes
+}
+
+function removeIndex(string) {
+	return string.substring(0, string.length - 1);// TOOD Up To 10 Indexes
+}
+
 function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog ID.
 	var selectedRow = getSelectedRow(tableId);
 	if (selectedRow == null || getRowCount(tableId) == 0) {// No row is selected.
@@ -224,7 +232,12 @@ function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog 
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = getKey($(this));
 		if (key != null) {
-			setField($(this), selectedRow[key]);
+			var keyIndex = getIndex(key);
+			if (!isNaN(keyIndex)) {// Index Exists
+				setField($(this), selectedRow[removeIndex(key)]);
+			} else {
+				setField($(this), selectedRow[key]);
+			}
 		}
 	});
 }
@@ -234,7 +247,12 @@ function getRequestData(id) {// ID is mostly dialog ID.
 	$('#' + id).find(getFormElements()).each(function() {
 		var key = getKey($(this));
 		if (key != null) {
-			requestData[key] = getFieldValue($(this));
+			var keyIndex = getIndex(key);
+			if (!isNaN(keyIndex)) {// Index Exists
+				requestData[removeIndex(key)] = getFieldValue($(this));
+			} else {
+				requestData[key] = getFieldValue($(this));
+			}
 		}
 	});
 	return requestData;
@@ -328,7 +346,7 @@ function setField(field, value) {
 	if (isEasyUiField(fieldClass)) {
 		field.textbox('setText', value);
 	} else if (fieldClass == 'richTextEditor') {
-		setActiveRichText(value);
+		setRichText(field.attr('name'), value);
 	} else {
 		field.val(value);
 	}
