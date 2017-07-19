@@ -1,13 +1,23 @@
 var data;// It has a map structure.
 
 // Constructor
+function setFormValidation(id, category, validationCriteria) {// ID is mostly dialog ID; Ascending
+	if (category == 'orderValidation') {
+		data.orderValidation[id] = validationCriteria;// Two Dimensional Array
+	} else if (category == 'customValidation') {
+		data.customValidation[id] = validationCriteria;// Function
+	}
+}
+
 function initialize() {
 	// Initialize Data
 	data = {};
-	data['clickCount'] = {};
-	data['responseData'] = {};
-	data['pagination'] = {};
+	data['clickCount'] = {};// Table ID Related
+	data['responseData'] = {};// Table ID Related
+	data['pagination'] = {};// Table ID Related
 	data['formElements'] = 'input, select, textarea, button';
+	data['orderValidation'] = {};// Mostly Dialog ID Related
+	data['customValidation'] = {};// Mostly Dialog ID Related
 	// Initialize rich text editors.
 	tinymce.init({
 		selector : '.richTextEditor'// Rich text editor is created by setting class attribute as richTextEditor in text area.
@@ -83,32 +93,110 @@ function setActiveRichText(richText) {
 	tinymce.activeEditor.setContent(richText);
 }
 
-//Form
+// Form
 function getFormElements() {
 	return data['formElements'];
 }
 
+function isEasyUiDateField(fieldClass) {
+	return isEasyUiField(fieldClass) && includes(fieldClass, 'datebox');
+}
+
+function keys(object) {
+	var result = [];
+	for (i in object) {
+		result.push(i);
+	}
+	return result;
+}
+
+function values(object) {
+	var result = [];
+	for (i in object) {
+		result.push(object[i]);
+	}
+	return result;
+}
+
 function validateForm(id) {// ID is mostly dialog ID.
-	var validForm = true;
+	var fieldMap = {};
+	var isValidForm = true;
 	$('#'+id).find(getFormElements()).each(function() {
+		// Field Info
+		var fieldKey = getKey($(this));
+		var fieldValue = null;
 		var fieldClass = $(this).attr('class');
+		if (isEasyUiField(fieldClass)) {
+			fieldValue = $(this).textbox('getText');
+		} else if (fieldClass == 'richTextEditor') {
+			fieldValue = getActiveRichText();
+		} else {
+			fieldValue = $(this).val();
+		}
+		// Not Null Validation
 		var required = $(this).attr('required');
 		if (required != null && required == 'required') {
-			var fieldValue = null;
-			if (isEasyUiField(fieldClass)) {
-				fieldValue = $(this).textbox('getText');
-			} else if (fieldClass == 'richTextEditor') {
-				fieldValue = getActiveRichText();
-			} else {
-				fieldValue = $(this).val();
-			}
 			if (fieldValue == null || fieldValue == '') {
-				alert(getKey($(this)) + ' should not be null.');
-				validForm = false;
+				alert(fieldKey + ' should not be empty.');
+				isValidForm = false;
+				return false;// Break Loop
 			}
 		}
+		// Date Format Validation
+		if (isEasyUiDateField(fieldClass)) {
+			if (fieldValue != null && fieldValue != '') {
+				var date = Date.parse(fieldValue);
+				if (isNaN(date)) {
+					isValidForm = false;
+					alert(fieldKey + ' is an invalid date.');
+					return false;// Break Loop
+				}
+			}
+		}
+		// Obtain the Field Map
+		fieldMap[fieldKey] = fieldValue;
 	});
-	return validForm;
+	// Validate Field Order
+	if (isValidForm) {
+		var fieldOrders = data.orderValidation[id];
+		if (fieldOrders != null) {
+			for (var j = 0; j < fieldOrders.length; j++) {
+				var fieldOrder = fieldOrders[j];
+				var previousValue = -Number.MAX_VALUE;
+				for (var i = 0; i < fieldOrder.length; i++) {
+					var value = fieldMap[fieldOrder[i]];
+					var numericValue = null;
+					if (count(value, '/') == 2) {// Date
+						numericValue = Date.parse(value);
+					} else {
+						numericValue = Number(value);
+					}
+					if (!isNaN(numericValue)) {
+						if (numericValue >= previousValue) {
+							previousValue = numericValue;
+						} else {
+							alert(fieldOrder[i - 1] + ' should be less than ' + fieldOrder[i] + '.');
+							isValidForm = false;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	// Customized Validation
+	
+	return isValidForm;
+}
+
+function count(string, char) {
+	var charCount = 0;
+	for (var i = 0; i < string.length; i++) {
+		if (string[i] == char) {
+			charCount++;
+		}
+	}
+	return charCount;
 }
 
 function getKey(element) {// Get either name or easy-ui text box name.
@@ -153,11 +241,14 @@ function getRequestData(id) {// ID is mostly dialog ID.
 }
 
 // Post
-function post(url, request, callBack) {
+function post(url, requestData, callBack) {
+	if (requestData == null) {
+		requestData = {};
+	}
 	$.ajax({
 		    url : url,
 		    type : 'POST',
-		    data : JSON.stringify(request),
+		    data : JSON.stringify(requestData),
 		    contentType : 'application/json;charset=utf-8',
 		    dataType : 'json',
 		    async : true,
@@ -172,10 +263,18 @@ function post(url, request, callBack) {
 	    }
 	});
 	// Clear Form Data
-	tinymce.activeEditor.setContent('');
+	try {
+		tinymce.activeEditor.setContent('');
+	} catch (e) {
+		console.info('The active rich text editor is unavailable.');
+	}
 }
 
 // Print
+function refresh(url, tableId) {
+	postAndPrint(url, null, tableId);
+}
+
 function print(tableId, pageIndex, pageSize) {
 	// Get Response Data
 	var responseData = getResponseData(tableId);

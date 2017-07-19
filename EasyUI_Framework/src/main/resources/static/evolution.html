@@ -15,6 +15,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	initialize();
+	refresh('find', 'output');
+	setFormValidation('findDialog', 'orderValidation', [['startDate', 'endDate']]);
 });
 </script>
 </head>
@@ -54,6 +56,14 @@ $(document).ready(function() {
 			<div class="fitem">
 				<label>Birthday:</label>
 				<input name="birthday" type="text" class="easyui-datebox" required="required">
+			</div>
+			<div class="fitem">
+				<label>Start Date:</label>
+				<input name="startDate" type="text" class="easyui-datebox" required="required">
+			</div>
+			<div class="fitem">
+				<label>End Date:</label>
+				<input name="endDate" type="text" class="easyui-datebox" required="required">
 			</div>
 			<div class="fitem">
 				<label>Message:</label>
@@ -97,7 +107,7 @@ $(document).ready(function() {
 		</div>
 	</div>
 	<div id="createDialogButtons">
-		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postForm('create', 'createDialog')" style="width:90px">Create</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postForm('create', 'createDialog');refresh('find', 'output');" style="width:90px">Create</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('createDialog')" style="width:90px">Cancel</a>
 	</div>
 	
@@ -132,7 +142,7 @@ $(document).ready(function() {
 		</div>
 	</div>
 	<div id="updateDialogButtons">
-		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postForm('update', 'updateDialog')" style="width:90px">Update</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postForm('update', 'updateDialog');refresh('find', 'output');" style="width:90px">Update</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('updateDialog')" style="width:90px">Cancel</a>
 	</div>	
 	
