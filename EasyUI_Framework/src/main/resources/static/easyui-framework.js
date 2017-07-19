@@ -233,7 +233,7 @@ function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog 
 		var key = getKey($(this));
 		if (key != null) {
 			var keyIndex = getIndex(key);
-			if (!isNaN(keyIndex)) {// Index Exists
+			if (!isNaN(keyIndex)) {// Index Exists; Mostly Tiny MCE Case
 				setField($(this), selectedRow[removeIndex(key)]);
 			} else {
 				setField($(this), selectedRow[key]);
@@ -248,8 +248,10 @@ function getRequestData(id) {// ID is mostly dialog ID.
 		var key = getKey($(this));
 		if (key != null) {
 			var keyIndex = getIndex(key);
-			if (!isNaN(keyIndex)) {// Index Exists
+			if (!isNaN(keyIndex)) {// Index Exists; Mostly Tiny MCE Case
 				requestData[removeIndex(key)] = getFieldValue($(this));
+			} else if (includes(key, 'Converted')) {
+				requestData[key.substring(0, key.indexOf('Converted'))] = getFieldValue($(this));
 			} else {
 				requestData[key] = getFieldValue($(this));
 			}
