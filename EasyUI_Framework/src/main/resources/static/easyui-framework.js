@@ -185,7 +185,12 @@ function validateForm(id) {// ID is mostly dialog ID.
 		}
 	}
 	// Customized Validation
-	
+	if (isValidForm) {
+		var customValidationFunction = data.customValidation[id];
+		if (customValidationFunction != null) {
+			isValidForm = customValidationFunction.call(fieldMap);// 'This' refers to fieldMap. 
+		}
+	}
 	return isValidForm;
 }
 
