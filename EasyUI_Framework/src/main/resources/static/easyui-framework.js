@@ -233,10 +233,14 @@ function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog 
 		var key = getKey($(this));
 		if (key != null) {
 			var keyIndex = getIndex(key);
+			var fieldValue = null
 			if (!isNaN(keyIndex)) {// Index Exists; Mostly Tiny MCE Case
-				setField($(this), selectedRow[removeIndex(key)]);
+				fieldValue = selectedRow[removeIndex(key)];
 			} else {
-				setField($(this), selectedRow[key]);
+				fieldValue = selectedRow[key];
+			}
+			if (fieldValue != null) {// Prevent setting null value into the field if the selected row does not contain the field.
+				setField($(this), fieldValue);
 			}
 		}
 	});

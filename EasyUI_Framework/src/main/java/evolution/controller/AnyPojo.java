@@ -11,6 +11,7 @@ public class AnyPojo {
 	private Date startDate;
 	private Date endDate;
 	private Date endDateConverted;
+	private String type;
 	public AnyPojo() {
 
 	}
@@ -20,7 +21,12 @@ public class AnyPojo {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	public AnyPojo(String name, String gender, Date birthday, String email, String message, Date startDate,
 			Date endDateConverted) {
 		this.name = name;
@@ -78,6 +84,6 @@ public class AnyPojo {
 	public String toString() {
 		return "AnyPojo [name=" + name + ", gender=" + gender + ", birthday=" + birthday + ", email=" + email
 				+ ", message=" + message + ", startDate=" + startDate + ", endDate=" + endDate + ", endDateConverted="
-				+ endDateConverted + "]";
+				+ endDateConverted + ", type=" + type + "]";
 	}
 }
