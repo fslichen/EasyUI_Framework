@@ -393,16 +393,66 @@ function getRowCount(tableId) {
 function addRow(tableId, row) {
 	var rowExcerpt = {};
 	var columnKeys = getColumnKeys(tableId);
+	var fieldClassMap = {};
+	$('#' + tableId).find('th').each(function() {
+		var fieldClass = $(this).attr('class');
+		if (fieldClass != null) {
+			fieldClassMap[$(this).attr('field')] = fieldClass;// The class is mostly date or dateTime which requires conversion.
+		}
+	});
 	for (var i = 0; i < columnKeys.length; i++) {
 		var columnKey = columnKeys[i];
 		var columnValue = row[columnKey];
 		if (columnValue != null) {
-			rowExcerpt[columnKey] = columnValue;
+			var fieldClass = fieldClassMap[columnKey];
+			if (fieldClass == 'javaDate') {// TODO Also consider the date time format.
+				rowExcerpt[columnKey] = convertJavaDate2MonthDayAndYear(columnValue);
+			} else if (fieldClass == 'stringDate') {
+				rowExcerpt[columnKey] = convertStringDate2MonthDayAndYear(columnValue);
+			} else {
+				rowExcerpt[columnKey] = columnValue;
+			}
 		} else {
 			rowExcerpt[columnKey] = null; 
 		}
 	}
 	$('#' + tableId).datagrid('appendRow', rowExcerpt);
+}
+
+function convertStringDate2MonthDayAndYear(string) {// Example : 2017/07/04 19:00:00
+	var blankIndex = string.indexOf(' ');
+	if (blankIndex != -1) {
+		string = string.substring(0, blankIndex);
+	}
+	if (includes(string, '-')) {
+		var date = string.split('-');
+	} else if (includes(string, '/')) {
+		var date = string.split('/');
+	}
+	var month = null;
+	var day = null;
+	var year = null;
+	for (var i = 0; i < date.length; i++) {
+		if (date[i].length == 4) {
+			year = date[i];
+		} else if (month == null) {
+			month = date[i];
+		} else if (day == null) {
+			day = date[i];
+		}
+	}
+	return month + '/' + day + '/' + year;
+}
+
+function convertJavaDate2MonthDayAndYear(object) {// Object can either be number or string.
+	var date = JSON.stringify(new Date(Number(object)));
+	date = date.substring(1, date.length - 1);
+	date = date.substring(0, date.indexOf('T'));
+	var yearMonthAndYear = date.split('-');
+	var month = yearMonthAndYear[1];
+	var day = yearMonthAndYear[2];
+	var year = yearMonthAndYear[0];
+	return month + '/' + day + '/' + year;
 }
 
 function sort(objects, sortField, order) {

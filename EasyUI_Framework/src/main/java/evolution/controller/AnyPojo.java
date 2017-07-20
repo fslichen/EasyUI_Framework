@@ -11,9 +11,23 @@ public class AnyPojo {
 	private Date startDate;
 	private Date endDate;
 	private Date endDateConverted;
+	private Long anniversary;
 	private String type;
+	private String executionDate;
 	public AnyPojo() {
 
+	}
+	public String getExecutionDate() {
+		return executionDate;
+	}
+	public void setExecutionDate(String executionDate) {
+		this.executionDate = executionDate;
+	}
+	public Long getAnniversary() {
+		return anniversary;
+	}
+	public void setAnniversary(Long anniversary) {
+		this.anniversary = anniversary;
 	}
 	public Date getEndDate() {
 		return endDate;
@@ -28,16 +42,19 @@ public class AnyPojo {
 		this.type = type;
 	}
 	public AnyPojo(String name, String gender, Date birthday, String email, String message, Date startDate,
-			Date endDateConverted) {
+			Date endDate, Date endDateConverted, Long anniversary, String executionDate) {
+		super();
 		this.name = name;
 		this.gender = gender;
 		this.birthday = birthday;
 		this.email = email;
 		this.message = message;
 		this.startDate = startDate;
+		this.endDate = endDate;
 		this.endDateConverted = endDateConverted;
+		this.anniversary = anniversary;
+		this.executionDate = executionDate;
 	}
-
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -79,11 +96,5 @@ public class AnyPojo {
 	}
 	public void setEndDateConverted(Date endDateConverted) {
 		this.endDateConverted = endDateConverted;
-	}
-	@Override
-	public String toString() {
-		return "AnyPojo [name=" + name + ", gender=" + gender + ", birthday=" + birthday + ", email=" + email
-				+ ", message=" + message + ", startDate=" + startDate + ", endDate=" + endDate + ", endDateConverted="
-				+ endDateConverted + ", type=" + type + "]";
 	}
 }
