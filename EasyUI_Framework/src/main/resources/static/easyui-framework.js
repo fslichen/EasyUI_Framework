@@ -233,7 +233,7 @@ function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog 
 		var key = getKey($(this));
 		if (key != null) {
 			var keyIndex = getIndex(key);
-			var fieldValue = null
+			var fieldValue = null;
 			if (!isNaN(keyIndex)) {// Index Exists; Mostly Tiny MCE Case
 				fieldValue = selectedRow[removeIndex(key)];
 			} else {
@@ -459,6 +459,22 @@ function sort(objects, sortField, order) {
 	return objects.sort(function(a, b) {
 		var x = a[sortField];
 		var y = b[sortField];
+		if (x == null && y == null) {
+			x = 0;
+			y = 1;
+		} else if (x == null) {
+			if (typeof y == 'string') {
+				x = '0';
+			} else if (typeof y == 'number') {
+				x = 0;
+			}
+		} else if (y == null) {
+			if (typeof x == 'string') {
+				y = '0';
+			} else if (typeof x == 'number') {
+				y = 0;
+			}
+		}
 		var result;
 		if (typeof x === 'string' && typeof y === 'string') {
 			result = x.localeCompare(y);
