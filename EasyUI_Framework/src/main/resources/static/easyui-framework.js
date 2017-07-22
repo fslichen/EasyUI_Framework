@@ -9,6 +9,22 @@ function setFormValidation(id, category, validationCriteria) {// ID is mostly di
 	}
 }
 
+function info(englishMessage, chineseMessage) {
+	if (data['language'] == 'English') {
+		$.messager.alert({
+			ok : 'OK',
+			title:'Info',
+			msg : englishMessage
+		});
+	} else if (data['language'] == 'Chinese') {
+		$.messager.alert({
+			ok : 'OK',
+			title:'Info',
+			msg : chineseMessage
+		});
+	}
+}
+
 function initialize() {
 	// Initialize Data
 	data = {};
@@ -18,6 +34,7 @@ function initialize() {
 	data['formElements'] = 'input, select, textarea, button';
 	data['orderValidation'] = {};// Mostly Dialog ID Related
 	data['customValidation'] = {};// Mostly Dialog ID Related
+	data['language'] = 'English';
 	// Initialize rich text editors.
 	tinymce.init({
 		selector : '.richTextEditor'// Rich text editor is created by setting class attribute as richTextEditor in text area.
