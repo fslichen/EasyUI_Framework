@@ -18,8 +18,8 @@ function info(englishMessage, chineseMessage) {
 		});
 	} else if (data['language'] == 'Chinese') {
 		$.messager.alert({
-			ok : 'OK',
-			title:'Info',
+			ok : '确定',
+			title : 'Info',
 			msg : chineseMessage
 		});
 	}
@@ -158,7 +158,7 @@ function validateForm(id) {// ID is mostly dialog ID.
 		var required = $(this).attr('required');
 		if (required != null && required == 'required') {
 			if (fieldValue == null || fieldValue == '') {
-				alert(fieldKey + ' should not be empty.');
+				info(getLabel($(this)) + ' should not be empty.', getLabel($(this)) + '不可为空');
 				isValidForm = false;
 				return false;// Break Loop
 			}
@@ -169,7 +169,7 @@ function validateForm(id) {// ID is mostly dialog ID.
 				var date = Date.parse(fieldValue);
 				if (isNaN(date)) {
 					isValidForm = false;
-					alert(fieldKey + ' is an invalid date.');
+					info(getLabel($(this)) + ' is an invalid date.', getLabel($(this)) + '日期不合法');
 					return false;// Break Loop
 				}
 			}
@@ -196,7 +196,7 @@ function validateForm(id) {// ID is mostly dialog ID.
 						if (numericValue >= previousValue) {
 							previousValue = numericValue;
 						} else {
-							alert(fieldOrder[i - 1] + ' should be less than ' + fieldOrder[i] + '.');
+							info(fieldOrder[i - 1] + ' should be less than ' + fieldOrder[i] + '.', '开始时间需小于结束时间');// TODO Change the Chinese label.
 							isValidForm = false;
 							break;
 						}
@@ -231,6 +231,10 @@ function getKey(element) {// Get either name or easy-ui text box name.
 		key = element.attr('textboxname');
 	}
 	return key;
+}
+
+function getLabel(element) {
+	return element.prev().html().replace(/:/g, '');
 }
 
 function getIndex(string) {
