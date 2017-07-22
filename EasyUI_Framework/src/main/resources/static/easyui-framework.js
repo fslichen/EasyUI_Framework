@@ -390,6 +390,10 @@ function getRowCount(tableId) {
 	return $('#' + tableId).datagrid('getData').total;
 }
 
+function isNumber(object) {
+	return !isNaN(Number(object));
+}
+
 function addRow(tableId, row) {
 	var rowExcerpt = {};
 	var columnKeys = getColumnKeys(tableId);
@@ -402,13 +406,24 @@ function addRow(tableId, row) {
 	});
 	for (var i = 0; i < columnKeys.length; i++) {
 		var columnKey = columnKeys[i];
-		var columnValue = row[columnKey];
+		var columnValue = null;
+		if (includes(columnKey, 'Alias')) {
+			columnValue = row[columnKey.substring(0, columnKey.indexOf('Alias'))];
+		} else {
+			columnValue = row[columnKey];
+		}
 		if (columnValue != null) {
 			var fieldClass = fieldClassMap[columnKey];
+			if (fieldClass == 'date') {
+				fieldClass = isNumber(columnValue) ? 'javaDate' : 'stringDate';
+			}
 			if (fieldClass == 'javaDate') {// TODO Also consider the date time format.
 				rowExcerpt[columnKey] = convertJavaDate2MonthDayAndYear(columnValue);
 			} else if (fieldClass == 'stringDate') {
 				rowExcerpt[columnKey] = convertStringDate2MonthDayAndYear(columnValue);
+			} else if (includes(fieldClass, 'alias')) {
+				var conversionMap = JSON.parse(fieldClass.substring(fieldClass.indexOf(':') + 1).replace(/'/g, '"'));
+				rowExcerpt[columnKey] = conversionMap[columnValue];
 			} else {
 				rowExcerpt[columnKey] = columnValue;
 			}
