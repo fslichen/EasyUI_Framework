@@ -148,17 +148,19 @@ function getFieldValue(field) {
 
 function validateForm(id) {// ID is mostly dialog ID.
 	var fieldMap = {};
+	var labelMap = {};
 	var isValidForm = true;
 	$('#'+id).find(getFormElements()).each(function() {
 		// Field Info
-		var fieldKey = getKey($(this));
+		var fieldKey = getFieldKey($(this));
 		var fieldClass = $(this).attr('class');
 		var fieldValue = getFieldValue($(this));
+		var fieldLabel = getFieldLabel($(this));
 		// Not Null Validation
 		var required = $(this).attr('required');
 		if (required != null && required == 'required') {
 			if (fieldValue == null || fieldValue == '') {
-				info(getLabel($(this)) + ' should not be empty.', getLabel($(this)) + '不可为空');
+				info(fieldLabel + ' should not be empty.', fieldLabel + '不可为空');
 				isValidForm = false;
 				return false;// Break Loop
 			}
@@ -169,13 +171,16 @@ function validateForm(id) {// ID is mostly dialog ID.
 				var date = Date.parse(fieldValue);
 				if (isNaN(date)) {
 					isValidForm = false;
-					info(getLabel($(this)) + ' is an invalid date.', getLabel($(this)) + '日期不合法');
+					info(fieldLabel + ' is an invalid date.', fieldLabel + '日期不合法');
 					return false;// Break Loop
 				}
 			}
 		}
 		// Obtain the Field Map
 		fieldMap[fieldKey] = fieldValue;
+		if (labelMap[fieldKey] == null && fieldLabel != null) {
+			labelMap[fieldKey] = fieldLabel;
+		}
 	});
 	// Validate Field Order
 	if (isValidForm) {
@@ -196,7 +201,7 @@ function validateForm(id) {// ID is mostly dialog ID.
 						if (numericValue >= previousValue) {
 							previousValue = numericValue;
 						} else {
-							info(fieldOrder[i - 1] + ' should be less than ' + fieldOrder[i] + '.', '开始时间需小于结束时间');// TODO Change the Chinese label.
+							info(labelMap[fieldOrder[i - 1]] + ' should be less than ' + labelMap[fieldOrder[i]] + '.', labelMap[fieldOrder[i - 1]] + '需小于' + labelMap[fieldOrder[i]]);
 							isValidForm = false;
 							break;
 						}
@@ -225,7 +230,7 @@ function count(string, char) {
 	return charCount;
 }
 
-function getKey(element) {// Get either name or easy-ui text box name.
+function getFieldKey(element) {// Get either name or easy-ui text box name.
 	var key = element.attr('name');
 	if (key == null) {
 		key = element.attr('textboxname');
@@ -233,8 +238,12 @@ function getKey(element) {// Get either name or easy-ui text box name.
 	return key;
 }
 
-function getLabel(element) {
-	return element.prev().html().replace(/:/g, '');
+function getFieldLabel(element) {
+	var label = element.attr('label');
+	if (label == null) {
+		label = element.prev().html();
+	}
+	return label != null ? label.replace(/:/g, '') : '';
 }
 
 function getIndex(string) {
@@ -251,7 +260,7 @@ function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog 
 		return;
 	}
 	$('#' + id).find(getFormElements()).each(function() {
-		var key = getKey($(this));
+		var key = getFieldKey($(this));
 		if (key != null) {
 			var keyIndex = getIndex(key);
 			var fieldValue = null;
@@ -270,7 +279,7 @@ function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog 
 function getRequestData(id) {// ID is mostly dialog ID.
 	var requestData = {};
 	$('#' + id).find(getFormElements()).each(function() {
-		var key = getKey($(this));
+		var key = getFieldKey($(this));
 		if (key != null) {
 			var keyIndex = getIndex(key);
 			if (!isNaN(keyIndex)) {// Index Exists; Mostly Tiny MCE Case
@@ -300,7 +309,7 @@ function post(url, requestData, callBack) {
 		    success : function(response) {
 		    	var message = response.message;
 		    	if (message != null) {
-		    		alert(message);
+		    		info(message, message);
 		    	}
 		    	if (callBack != null) {
 		    		callBack.call(response);// Call passes the response argument to 'this' object in the call back function.
@@ -355,7 +364,7 @@ function postAndPrint(url, request, tableId) {
 			setResponseData(tableId, responseData);// Set the response data for a given data grid.
 			print(tableId);
 		} else {
-			alert("Failed to receive the response data. Make sure the field name for response data is 'responseData', 'data' or 'responseGrid'.");
+			info("Failed to receive the response data. Make sure the field name for response data is 'responseData', 'data' or 'responseGrid'.", '未能成功获取返回数据');
 		}
 	});
 }
