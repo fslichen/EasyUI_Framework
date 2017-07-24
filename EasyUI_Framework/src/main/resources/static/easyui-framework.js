@@ -4,8 +4,8 @@ var data;// It has a map structure.
 function setFormValidation(id, category, validationCriteria) {// ID is mostly dialog ID; Ascending
 	if (category == 'orderValidation') {
 		data.orderValidation[id] = validationCriteria;// Two Dimensional Array
-	} else if (category == 'customValidation') {
-		data.customValidation[id] = validationCriteria;// Function
+	} else if (category == 'customizedValidation') {
+		data.customizedValidation[id] = validationCriteria;// Function
 	}
 }
 
@@ -33,7 +33,7 @@ function initialize() {
 	data['pagination'] = {};// Table ID Related
 	data['formElements'] = 'input, select, textarea, button';
 	data['orderValidation'] = {};// Mostly Dialog ID Related
-	data['customValidation'] = {};// Mostly Dialog ID Related
+	data['customizedValidation'] = {};// Mostly Dialog ID Related
 	data['language'] = 'English';
 	// Initialize rich text editors.
 	tinymce.init({
@@ -212,9 +212,10 @@ function validateForm(id) {// ID is mostly dialog ID.
 	}
 	// Customized Validation
 	if (isValidForm) {
-		var customValidationFunction = data.customValidation[id];
-		if (customValidationFunction != null) {
-			isValidForm = customValidationFunction.call(fieldMap);// 'This' refers to fieldMap. 
+		var customizedValidationFunction = data.customizedValidation[id];
+		if (customizedValidationFunction != null) {
+			var validationMap = {'fieldMap' : fieldMap, 'labelMap' : labelMap};
+			isValidForm = customizedValidationFunction.call(validationMap);// 'This' refers to fieldMap. 
 		}
 	}
 	return isValidForm;

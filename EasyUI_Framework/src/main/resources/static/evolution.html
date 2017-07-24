@@ -18,6 +18,15 @@ $(document).ready(function() {
 	data['language'] = 'Chinese';
 	refresh('find', 'output');
 	setFormValidation('findDialog', 'orderValidation', [['startDate', 'endDate']]);
+	setFormValidation('findDialog', 'customizedValidation', function() {
+		var fieldMap = this.fieldMap;
+		var labelMap = this.labelMap;
+		if (fieldMap.email != null && fieldMap.email != '' && !includes(fieldMap.email, '@')) {
+			info(labelMap.email + ' is invalid', labelMap.email + '不合法');
+			return false;
+		}
+		return true;
+	});
 });
 </script>
 </head>
