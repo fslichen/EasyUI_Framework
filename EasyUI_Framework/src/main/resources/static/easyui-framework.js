@@ -389,11 +389,11 @@ function setField(field, value) {
 	}
 }
 
-function postForm(url, id) {// ID is mostly dialog ID.
+function postForm(url, id, callBackFunction) {// ID is mostly dialog ID.
 	if (!validateForm(id)) {
 		return false;
 	}
-	post(url, getRequestData(id));
+	post(url, getRequestData(id), callBackFunction);
 	closeDialog(id);
 	return true;
 }
