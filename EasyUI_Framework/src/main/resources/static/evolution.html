@@ -33,6 +33,7 @@ $(document).ready(function() {
 <body>
 	<!-- For Fun -->
 	<input type="button" value="Alter Table" onclick="alterTable('output', {'name' : 'Name', 'gender' : 'Gender'})"/>
+	<input type="button" value="Post Row" onclick="postFields('find', 'output', ['name'])"/>
 	
 	<!-- Tool Bar -->
 	<div id="toolbar">
@@ -142,6 +143,12 @@ $(document).ready(function() {
 			<div class="fitem">
 				<label>End Date:</label>
 				<input name="endDateConverted" type="text" class="easyui-datebox" required="required">
+			</div>
+			<div class="fitem">
+				<input name="salary" label="Salary:" class="easyui-textbox" subClass="number" />
+			</div>
+			<div class="fitem">
+				<input name="personalId" label="Personal ID:" class="easyui-textbox" subclass="chineseCitizenshipId" />
 			</div>
 			<div class="fitem">
 				<label>Message:</label>

@@ -1,6 +1,26 @@
 var data;// It has a map structure.
 
 // Constructor
+function getSelectedRows(tableId) {
+	return $('#' + tableId).datagrid('getSelections');
+}
+
+function getFieldMap(fieldKeys, row) {
+	var fieldMap = {};
+	for (var i = 0; i < fieldKeys.length; i++) {
+		var fieldKey = fieldKeys[i];
+		fieldMap[fieldKey] = row[fieldKey];
+	}
+	return fieldMap;
+}
+
+function postFields(url, tableId, fieldKeys, callBackFunction) {
+	var row = getSelectedRow(tableId);
+	if (row != null) {
+		post(url, getFieldMap(fieldKeys, row), callBackFunction);
+	}
+}
+
 function setFormValidation(id, category, validationCriteria) {// ID is mostly dialog ID; Ascending
 	if (category == 'orderValidation') {
 		data.orderValidation[id] = validationCriteria;// Two Dimensional Array
@@ -154,15 +174,32 @@ function validateForm(id) {// ID is mostly dialog ID.
 		// Field Info
 		var fieldKey = getFieldKey($(this));
 		var fieldClass = $(this).attr('class');
+		var fieldSubClass = $(this).attr('subClass');
 		var fieldValue = getFieldValue($(this));
 		var fieldLabel = getFieldLabel($(this));
 		// Not Null Validation
 		var required = $(this).attr('required');
-		if (required != null && required == 'required') {
+		if (required != null && (required == 'required' || required == 'true')) {
 			if (fieldValue == null || fieldValue == '') {
 				info(fieldLabel + ' should not be empty.', fieldLabel + '不可为空');
 				isValidForm = false;
 				return false;// Break Loop
+			}
+		}
+		// Number Format Validation 
+		if (fieldSubClass == 'number') {
+			if (!isNumber(fieldValue)) {
+				info(fieldLabel + ' is not a number.', fieldLabel + '不是数字');
+				isValidForm = false;
+				return false;// Break Loop
+			}
+		}
+		// Personal ID Validation
+		if (fieldSubClass == 'chineseCitizenshipId') {
+			if (fieldValue != null && fieldValue != '' && fieldValue.toString().length != 18) {
+				info(fieldLabel + ' is not a valid Chinese citizenship ID.', fieldLabel + '不是合法的身份证号');
+				isValidForm = false;
+				return false;
 			}
 		}
 		// Date Format Validation
@@ -170,8 +207,8 @@ function validateForm(id) {// ID is mostly dialog ID.
 			if (fieldValue != null && fieldValue != '') {
 				var date = Date.parse(fieldValue);
 				if (isNaN(date)) {
-					isValidForm = false;
 					info(fieldLabel + ' is an invalid date.', fieldLabel + '日期不合法');
+					isValidForm = false;
 					return false;// Break Loop
 				}
 			}
@@ -182,43 +219,43 @@ function validateForm(id) {// ID is mostly dialog ID.
 			labelMap[fieldKey] = fieldLabel;
 		}
 	});
+	if (!isValidForm) {
+		return false;
+	}
 	// Validate Field Order
-	if (isValidForm) {
-		var fieldOrders = data.orderValidation[id];
-		if (fieldOrders != null) {
-			for (var j = 0; j < fieldOrders.length; j++) {
-				var fieldOrder = fieldOrders[j];
-				var previousValue = -Number.MAX_VALUE;
-				for (var i = 0; i < fieldOrder.length; i++) {
-					var value = fieldMap[fieldOrder[i]];
-					var numericValue = null;
-					if (count(value, '/') == 2) {// Date
-						numericValue = Date.parse(value);
+	var fieldOrders = data.orderValidation[id];
+	if (fieldOrders != null) {
+		for (var j = 0; j < fieldOrders.length; j++) {
+			var fieldOrder = fieldOrders[j];
+			var previousValue = -Number.MAX_VALUE;
+			for (var i = 0; i < fieldOrder.length; i++) {
+				var value = fieldMap[fieldOrder[i]];
+				var numericValue = null;
+				if (count(value, '/') == 2) {// Date
+					numericValue = Date.parse(value);
+				} else {
+					numericValue = Number(value);
+				}
+				if (!isNaN(numericValue)) {
+					if (numericValue >= previousValue) {
+						previousValue = numericValue;
 					} else {
-						numericValue = Number(value);
-					}
-					if (!isNaN(numericValue)) {
-						if (numericValue >= previousValue) {
-							previousValue = numericValue;
-						} else {
-							info(labelMap[fieldOrder[i - 1]] + ' should be less than ' + labelMap[fieldOrder[i]] + '.', labelMap[fieldOrder[i - 1]] + '需小于' + labelMap[fieldOrder[i]]);
-							isValidForm = false;
-							break;
-						}
+						info(labelMap[fieldOrder[i - 1]] + ' should be less than ' + labelMap[fieldOrder[i]] + '.', labelMap[fieldOrder[i - 1]] + '需小于' + labelMap[fieldOrder[i]]);
+						return false;
 					}
 				}
 			}
 		}
 	}
 	// Customized Validation
-	if (isValidForm) {
-		var customizedValidationFunction = data.customizedValidation[id];
-		if (customizedValidationFunction != null) {
-			var validationMap = {'fieldMap' : fieldMap, 'labelMap' : labelMap};
-			isValidForm = customizedValidationFunction.call(validationMap);// 'This' refers to fieldMap. 
-		}
+	var customizedValidationFunction = data.customizedValidation[id];
+	if (customizedValidationFunction != null) {
+		var validationMap = {'fieldMap' : fieldMap, 'labelMap' : labelMap};
+		if (!customizedValidationFunction.call(validationMap)) {// 'This' refers to validationMap.
+			return false;
+		} 
 	}
-	return isValidForm;
+	return true;
 }
 
 function count(string, char) {
@@ -258,6 +295,7 @@ function removeIndex(string) {
 function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog ID.
 	var selectedRow = getSelectedRow(tableId);
 	if (selectedRow == null || getRowCount(tableId) == 0) {// No row is selected.
+		info('Please select a row.', '请选择一行数据');
 		return;
 	}
 	$('#' + id).find(getFormElements()).each(function() {

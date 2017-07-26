@@ -97,4 +97,11 @@ public class AnyPojo {
 	public void setEndDateConverted(Date endDateConverted) {
 		this.endDateConverted = endDateConverted;
 	}
+	@Override
+	public String toString() {
+		return "AnyPojo [name=" + name + ", gender=" + gender + ", birthday=" + birthday + ", email=" + email
+				+ ", message=" + message + ", startDate=" + startDate + ", endDate=" + endDate + ", endDateConverted="
+				+ endDateConverted + ", anniversary=" + anniversary + ", type=" + type + ", executionDate="
+				+ executionDate + "]";
+	}
 }
