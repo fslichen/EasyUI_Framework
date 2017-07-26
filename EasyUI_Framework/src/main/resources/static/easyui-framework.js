@@ -5,19 +5,45 @@ function getSelectedRows(tableId) {
 	return $('#' + tableId).datagrid('getSelections');
 }
 
-function getFieldMap(fieldKeys, row) {
-	var fieldMap = {};
+function mergeMaps(maps, overwrite) {
+	var mergedMap = {};
+	for (var i = 0; i < maps.length; i++) {
+		var map = maps[i];
+		if (map == null) {
+			continue;
+		}
+		for (var j in map) {
+			if (mergedMap[j] == null || overwrite == true) {
+				mergedMap[j] = map[j];
+			}
+		}
+	}
+	return mergedMap;
+}
+
+function getFieldMap(fieldKeys, row, fieldMap, overwrite) {
+	if (fieldMap == null) {
+		fieldMap = {};
+	}
 	for (var i = 0; i < fieldKeys.length; i++) {
 		var fieldKey = fieldKeys[i];
-		fieldMap[fieldKey] = row[fieldKey];
+		if (fieldMap[fieldKey] == null || overwrite == true) {
+			fieldMap[fieldKey] = row[fieldKey];
+		}
 	}
 	return fieldMap;
 }
 
-function postFields(url, tableId, fieldKeys, callBackFunction) {
+function postFields(url, fieldMap, tableId, fieldKeys, callBackFunction) {
 	var row = getSelectedRow(tableId);
 	if (row != null) {
-		post(url, getFieldMap(fieldKeys, row), callBackFunction);
+		if (fieldKeys != null) {
+			post(url, getFieldMap(fieldKeys, row, fieldMap, false), callBackFunction);
+		} else {
+			post(url, mergeMaps([fieldMap, row], false), callBackFunction);
+		}
+	} else {
+		post(url, fieldMap, callBackFunction);
 	}
 }
 
@@ -295,6 +321,7 @@ function removeIndex(string) {
 function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog ID.
 	var selectedRow = getSelectedRow(tableId);
 	if (selectedRow == null || getRowCount(tableId) == 0) {// No row is selected.
+		closeDialog(id);
 		info('Please select a row.', '请选择一行数据');
 		return;
 	}

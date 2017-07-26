@@ -33,8 +33,8 @@ $(document).ready(function() {
 <body>
 	<!-- For Fun -->
 	<input type="button" value="Alter Table" onclick="alterTable('output', {'name' : 'Name', 'gender' : 'Gender'})"/>
-	<input type="button" value="Post Row" onclick="postFields('find', 'output', ['name'])"/>
-	
+	<input type="button" value="Post Row" onclick="postFields('find', {'gender' : 'M'}, 'output', null)"/>
+	<input type="button" value="MergeMaps" onclick="mergeMaps([{'name':'Chen'}, {'gender':'M'}], false)"/>
 	<!-- Tool Bar -->
 	<div id="toolbar">
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('findDialog', 'Find')">Find</a>
@@ -141,10 +141,6 @@ $(document).ready(function() {
 				<input name="birthday" type="text" class="easyui-datebox" required="required">
 			</div>
 			<div class="fitem">
-				<label>End Date:</label>
-				<input name="endDateConverted" type="text" class="easyui-datebox" required="required">
-			</div>
-			<div class="fitem">
 				<input name="salary" label="Salary:" class="easyui-textbox" subClass="number" />
 			</div>
 			<div class="fitem">
@@ -183,9 +179,6 @@ $(document).ready(function() {
 					<th field="gender" width="50" sortable="true">Gender</th>
 					<th field="birthday" width="50" sortable="true">Birthday</th>
 					<th field="email" width="50" sortable="true">Email</th>
-					<th field="endDateConverted" width="50" sortable="true" style="display:none">End Date</th>
-					<th field="anniversary" class="javaDate" width="50" sortable="true" style="display:none">Anniversary</th>
-					<th field="executionDate" class="stringDate" width="50" sortable="true" style="display:none">Execution Date</th>
 					<th field="message" width="50" sortable="true" style="display:none" hidden="true">Message</th>
 				</tr>
 			</thead>
