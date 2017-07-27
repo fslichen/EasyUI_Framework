@@ -5,6 +5,23 @@ function getSelectedRows(tableId) {
 	return $('#' + tableId).datagrid('getSelections');
 }
 
+function confirm(englishInfo, chineseInfo, callBackFunction) {
+	function proceed(confirmed) {
+		if (confirmed) {
+			callBackFunction.call();
+		}
+	}
+	if (data['language'] == 'English') {
+		$.messager.confirm('Confirm', englishInfo, function (confirmed) {
+			proceed(confirmed);
+		});
+	} else if (data['language'] == 'Chinese') {
+		$.messager.confirm('确认', chineseInfo, function (confirmed) {
+			proceed(confirmed);
+		});
+	}
+}
+
 function mergeMaps(maps, overwrite) {
 	var mergedMap = {};
 	for (var i = 0; i < maps.length; i++) {
@@ -99,6 +116,10 @@ function initialize() {
 		$(this).click(function() {
 			var sortField = $(this).parent().attr('field');
 			var tableId = parent($(this), 7).next('table').attr('id');
+			var responseData = getResponseData(tableId);
+			if (responseData == null) {// There is no need to sort a column when response data is unavailable.
+				return false;
+			}
 			var firstIndex = data.pagination[tableId].firstIndex;
 			var lastIndex = data.pagination[tableId].lastIndex;
 			var clickCount = data.clickCount[tableId];
@@ -118,7 +139,6 @@ function initialize() {
 				}
 			}
 			var sortFieldClickCount = data.clickCount[tableId][sortField]++;
-			var responseData = getResponseData(tableId);
 			var responseDataExcerpt = [];
 			for (var i = firstIndex; i < lastIndex; i++) {
 				responseDataExcerpt.push(responseData[i]);
@@ -570,23 +590,12 @@ function sort(objects, sortField, order) {
 	return objects.sort(function(a, b) {
 		var x = a[sortField];
 		var y = b[sortField];
-		if (x == null && y == null) {
-			x = 0;
-			y = 1;
-		} else if (x == null) {
-			if (typeof y == 'string') {
-				x = '0';
-			} else if (typeof y == 'number') {
-				x = 0;
-			}
+		var result = 1;
+		if (x == null) {
+			x = y;
 		} else if (y == null) {
-			if (typeof x == 'string') {
-				y = '0';
-			} else if (typeof x == 'number') {
-				y = 0;
-			}
+			y = x;
 		}
-		var result;
 		if (typeof x === 'string' && typeof y === 'string') {
 			result = x.localeCompare(y);
 		} else if (typeof x === 'number' && typeof y === 'number') {
