@@ -88,16 +88,29 @@ function info(englishMessage, chineseMessage) {
 	}
 }
 
+function setCachedRequestData(url, requestData, tableId) {
+	requestData = requestData == null ? {} : requestData;
+	requestData['url'] = url;
+	data.requestData[tableId] = requestData;
+}
+
+function getCachedRequestData(tableId) {
+	return data.requestData[tableId];
+}
+
 function initialize() {
 	// Initialize Data
 	data = {};
 	data['clickCount'] = {};// Table ID Related
 	data['responseData'] = {};// Table ID Related
+	data['requestData'] = {};// Table ID Related
 	data['pagination'] = {};// Table ID Related
 	data['formElements'] = 'input, select, textarea, button';
 	data['orderValidation'] = {};// Mostly Dialog ID Related
 	data['customizedValidation'] = {};// Mostly Dialog ID Related
+	// Initial Configurations
 	data['language'] = 'English';
+	data['localPagination'] = true;
 	// Initialize rich text editors.
 	tinymce.init({
 		selector : '.richTextEditor'// Rich text editor is created by setting class attribute as richTextEditor in text area.
@@ -107,7 +120,14 @@ function initialize() {
 		var tableId = $(this).attr('id');
 		$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
 			onSelectPage : function(pageIndex, pageSize) {
-				print(tableId, pageIndex, pageSize);
+				if (data.localPagination) {
+					print(tableId, pageIndex, pageSize);// The page index and page size are required in local pagination because only a portion of data is retrieved and printed from the cache.
+				} else {
+					var requestData = getCachedRequestData(tableId);
+					requestData['pageIndex'] = pageIndex;// The remote server accepts the pagination info.
+					requestData['pageSize'] = pageSize;
+					postAndPrint(requestData.url, requestData, tableId);// The page index and page size are not required in remote pagination because all the data retrieved from the server should be printed. 
+				}
 			}
 		});
 	});
@@ -414,30 +434,43 @@ function refresh(url, tableId) {
 }
 
 function print(tableId, pageIndex, pageSize) {
-	// Get Response Data
-	var responseData = getResponseData(tableId);
-	// Set Pagination
-	if (pageIndex == null) {
-		pageIndex = 1;
-	}
-	if (pageSize == null) {
-		pageSize = 10;
-	}
-	var firstIndex = (pageIndex - 1) * pageSize;
-	var lastIndex = Math.min(pageIndex * pageSize, responseData.length);
-	data.pagination[tableId] = {'firstIndex' : firstIndex, 'lastIndex' : lastIndex};
-	$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
-	    total : responseData.length,
-	    pageSize : pageSize
-	});
-	// Print Response Data
+	var firstIndex = null;
+	var lastIndex = null;
+	var responseData = getResponseData(tableId);// The response data is already available prior to calling this method.
 	deleteRows(tableId);
+	if (data.localPagination) {// The page index and page size are required in local pagination because all the data are stored in JS, thereby it is unlikely to print all the data all at once.
+		pageIndex = pageIndex == null ? 1 : pageIndex;
+		pageSize = pageSize == null ? 10 : pageSize;
+		firstIndex = (pageIndex - 1) * pageSize;
+		lastIndex = Math.min(pageIndex * pageSize, responseData.length);
+		$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
+			total : responseData.length,
+			pageSize : pageSize
+		});
+	} else {// The page index and page size are not required in remote pagination because only a part of the data are retrieved from remote server, therefore it is okay to print out all the retrieved data.
+		firstIndex = 0;
+		lastIndex = responseData.length;
+		var pageSize = 50;
+		if (lastIndex < 10) {
+			pageSize = 10;
+		} else if (lastIndex < 20) {
+			pageSize = 20;
+		} else if (lastIndex < 30) {
+			pageSize = 30;
+		}
+		$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
+			total : 1000,
+			pageSize : pageSize
+		});
+	}
+	data.pagination[tableId] = {'firstIndex' : firstIndex, 'lastIndex' : lastIndex};
 	for (var i = firstIndex; i < lastIndex; i++) {
 		addRow(tableId, responseData[i]);
 	}
 }
 
 function postAndPrint(url, request, tableId) {
+	setCachedRequestData(url, request, tableId);// Set the URL and request data associated with a table ID. 
 	post(url, request, function() {
 		var responseData = this.responseData;// The field name for response data is 'responseData'.
 		if (responseData == null) {
@@ -460,7 +493,7 @@ function includes(string, substring) {
 }
 
 function isEasyUiField(fieldClass) {
-	return includes(fieldClass, 'easyui-textbox') || includes(fieldClass, 'easyui-datebox');
+	return includes(fieldClass, 'easyui-');
 }
 
 function setField(field, value) {

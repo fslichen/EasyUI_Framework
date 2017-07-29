@@ -16,6 +16,7 @@
 $(document).ready(function() {
 	initialize();
 	data['language'] = 'Chinese';
+	data['localPagination'] = false;
 	refresh('find', 'output');
 	setFormValidation('findDialog', 'orderValidation', [['startDate', 'endDate']]);
 	setFormValidation('findDialog', 'customizedValidation', function() {
@@ -27,15 +28,15 @@ $(document).ready(function() {
 		}
 		return true;
 	});
-	confirm('Hello World', '你好世界', function() {alert('ok')});
 });
 </script>
 </head>
 <body>
 	<!-- For Fun -->
-	<input type="button" value="Alter Table" onclick="alterTable('output', {'name' : 'Name', 'gender' : 'Gender'})"/>
-	<input type="button" value="Post Row" onclick="postFields('find', {'gender' : 'M'}, 'output', null)"/>
-	<input type="button" value="MergeMaps" onclick="mergeMaps([{'name':'Chen'}, {'gender':'M'}], false)"/>
+	<input type="button" value="Alter Table" onclick="alterTable('output', {'name' : 'Name', 'gender' : 'Gender'})" />
+	<input type="button" value="Post Row" onclick="postFields('find', {'gender' : 'M'}, 'output', null)" />
+	<input type="button" value="MergeMaps" onclick="mergeMaps([{'name':'Chen'}, {'gender':'M'}], false)" />
+	<input type="button" value="MergeMaps" onclick="confirm('Hello World', '你好世界', function() {alert('ok')})"/>
 	<!-- Tool Bar -->
 	<div id="toolbar">
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('findDialog', 'Find')">Find</a>
@@ -88,23 +89,19 @@ $(document).ready(function() {
 		<div class="ftitle">Create</div>
 		<div class="form">
 			<div class="fitem">
-				<label>Name:</label>
-				<input name="name" data-options="iconCls:'icon-search'" style="width:200px">
+				<input name="name" label="Name:" class="easyui-textbox" data-options="iconCls:'icon-search'" style="width:200px" />
 			</div>
 			<div class="fitem">
-				<label>Gender:</label>
-				<select name="gender" style="width:200px">
+				<select name="gender" label="Gender:" class="easyui-combobox" style="width:200px">
 				    <option value="F">Female</option>
 				    <option value="M">Male</option>
 				</select>
 			</div>
 			<div class="fitem">
-				<label>Email:</label>
-				<input name="email">
+				<input name="email" label="Email:" class="easyui-textbox" />
 			</div>
 			<div class="fitem">
-				<label>Birthday:</label>
-				<input name="birthday" type="text" class="easyui-datebox" required="required">
+				<input name="birthday" label="Birthday:" class="easyui-datebox" required="required" />
 			</div>
 			<div class="fitem">
 				<label>Message:</label>
@@ -123,23 +120,19 @@ $(document).ready(function() {
 		<div class="ftitle">Update</div>
 		<div class="form">
 			<div class="fitem">
-				<label>Name:</label>
-				<input name="name" data-options="iconCls:'icon-search'" style="width:200px">
+				<input name="name" label="Name:" class="easyui-textbox" data-options="iconCls:'icon-search'" style="width:200px" />
 			</div>
 			<div class="fitem">
-				<label>Gender:</label>
-				<select name="gender" style="width:200px">
+				<select name="gender" label="Gender:" class="easyui-combobox" style="width:200px">
 				    <option value="F">Female</option>
 				    <option value="M">Male</option>
 				</select>
 			</div>
 			<div class="fitem">
-				<label>Email:</label>
-				<input name="email">
+				<input name="email" label="Email:" class="easyui-textbox" />
 			</div>
 			<div class="fitem">
-				<label>Birthday:</label>
-				<input name="birthday" type="text" class="easyui-datebox" required="required">
+				<input name="birthday" label="Birthday:" class="easyui-datebox" required="required" />
 			</div>
 			<div class="fitem">
 				<input name="salary" label="Salary:" class="easyui-textbox" subClass="number" />
@@ -151,7 +144,6 @@ $(document).ready(function() {
 				<label>Message:</label>
 				<textarea name="message2" class="richTextEditor"></textarea>
 			</div>
-			<input name="type" type="hidden" value="Lesbian" />
 		</div>
 	</div>
 	<div id="updateDialogButtons">
@@ -183,7 +175,6 @@ $(document).ready(function() {
 					<th field="message" width="50" sortable="true" style="display:none" hidden="true">Message</th>
 				</tr>
 			</thead>
-			<tbody></tbody>
 		</table>
 	</div>
 </body>
