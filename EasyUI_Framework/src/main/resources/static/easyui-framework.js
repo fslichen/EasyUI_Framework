@@ -165,8 +165,9 @@ function initialize() {
 			}
 			responseDataExcerpt = sort(responseDataExcerpt, sortField, sortFieldClickCount %2 == 0);
 			deleteRows(tableId);
+			var columnClassMap = getColumnClassMap(tableId);
 			for (var i = 0; i < lastIndex - firstIndex; i++) {
-				addRow(tableId, responseDataExcerpt[i]);
+				addRow(tableId, responseDataExcerpt[i], columnClassMap);
 			}
 		});
 	});
@@ -451,21 +452,22 @@ function print(tableId, pageIndex, pageSize) {
 		firstIndex = 0;
 		lastIndex = responseData.length;
 		var pageSize = 50;
-		if (lastIndex < 10) {
+		if (lastIndex <= 10) {
 			pageSize = 10;
-		} else if (lastIndex < 20) {
+		} else if (lastIndex <= 20) {
 			pageSize = 20;
-		} else if (lastIndex < 30) {
+		} else if (lastIndex <= 30) {
 			pageSize = 30;
 		}
 		$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
-			total : 1000,
+			total : 5000,// The exact total number of records is given by the query count SQL statement.
 			pageSize : pageSize
 		});
 	}
 	data.pagination[tableId] = {'firstIndex' : firstIndex, 'lastIndex' : lastIndex};
+	var columnClassMap = getColumnClassMap(tableId);
 	for (var i = firstIndex; i < lastIndex; i++) {
-		addRow(tableId, responseData[i]);
+		addRow(tableId, responseData[i], columnClassMap);
 	}
 }
 
@@ -543,16 +545,20 @@ function isNumber(object) {
 	return !isNaN(Number(object));
 }
 
-function addRow(tableId, row) {
-	var rowExcerpt = {};
-	var columnKeys = getColumnKeys(tableId);
-	var fieldClassMap = {};
+function getColumnClassMap(tableId) {
+	var columnClassMap = {};
 	$('#' + tableId).find('th').each(function() {
 		var fieldClass = $(this).attr('class');
 		if (fieldClass != null) {
-			fieldClassMap[$(this).attr('field')] = fieldClass;// The class is mostly date or dateTime which requires conversion.
+			columnClassMap[$(this).attr('field')] = fieldClass;// The class is mostly date or dateTime which requires conversion.
 		}
 	});
+	return columnClassMap;
+}
+
+function addRow(tableId, row, columnClassMap) {
+	var rowExcerpt = {};
+	var columnKeys = getColumnKeys(tableId);
 	for (var i = 0; i < columnKeys.length; i++) {
 		var columnKey = columnKeys[i];
 		var columnValue = null;
@@ -562,7 +568,7 @@ function addRow(tableId, row) {
 			columnValue = row[columnKey];
 		}
 		if (columnValue != null) {
-			var fieldClass = fieldClassMap[columnKey];
+			var fieldClass = columnClassMap[columnKey];
 			if (fieldClass == 'date') {
 				fieldClass = isNumber(columnValue) ? 'javaDate' : 'stringDate';
 			}

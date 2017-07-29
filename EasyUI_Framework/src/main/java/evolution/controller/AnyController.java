@@ -24,7 +24,15 @@ public class AnyController {
 			anyPojos.addAll(Arrays.asList(anyPojo0, anyPojo1));
 		}
 		JsResponse<AnyPojo> response = new JsResponse<>();
-		response.setData(anyPojos);
+		if (anyPojo.getPageSize() != null) {
+			List<AnyPojo> anotherPojos = new LinkedList<>();
+			for (int i = 0; i < anyPojo.getPageSize(); i++) {
+				anotherPojos.add(anyPojos.get(i));
+			}
+			response.setData(anotherPojos);
+		} else {
+			response.setData(anyPojos);
+		}
 		return response;
 	}
 	

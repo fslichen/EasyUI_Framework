@@ -17,7 +17,8 @@ $(document).ready(function() {
 	initialize();
 	data['language'] = 'Chinese';
 	data['localPagination'] = false;
-	refresh('find', 'output');
+//	refresh('find', 'output');
+	postAndPrint('find', {'pageSize' : 20}, 'output');
 	setFormValidation('findDialog', 'orderValidation', [['startDate', 'endDate']]);
 	setFormValidation('findDialog', 'customizedValidation', function() {
 		var fieldMap = this.fieldMap;
