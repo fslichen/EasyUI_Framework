@@ -471,9 +471,26 @@ function print(tableId, pageIndex, pageSize) {
 	}
 }
 
-function postAndPrint(url, request, tableId) {
-	setCachedRequestData(url, request, tableId);// Set the URL and request data associated with a table ID. 
-	post(url, request, function() {
+function getPageSize(tableId) {
+	return $('#' + tableId + 'Pagination').pagination('options').pageSize;
+}
+
+function postAndPrint(url, requestData, tableId) {
+	requestData = requestData == null ? {} : requestData;
+	setCachedRequestData(url, requestData, tableId);// Set the URL and request data associated with a table ID. 
+	if (!data['localPagination']) {
+		var pageIndex = requestData['pageIndex'];
+		var pageSize = requestData['pageSize'];
+		if (pageIndex == null) {
+			pageIndex = 1;
+		}
+		if (pageSize == null) {
+			pageSize = getPageSize(tableId);
+		}
+		requestData['pageIndex'] = pageIndex;
+		requestData['pageSize'] = pageSize;
+	}
+	post(url, requestData, function() {
 		var responseData = this.responseData;// The field name for response data is 'responseData'.
 		if (responseData == null) {
 			responseData = this.data;// The secondary field name for response data is 'data'.
@@ -518,10 +535,20 @@ function postForm(url, id, callBackFunction) {// ID is mostly dialog ID.
 	return true;
 }
 
+function setPageIndex(tableId, pageIndex) {
+	if (pageIndex == null) {
+		pageIndex = 1;
+	}
+	$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
+		pageNumber : pageIndex
+	});
+}
+
 function postFormAndPrint(url, id, tableId) {// ID is mostly dialog ID.
 	if (!validateForm(id)) {
 		return false;
 	}
+	setPageIndex(tableId, 1);
 	postAndPrint(url, getRequestData(id), tableId);
 	closeDialog(id);
 	return true;
