@@ -598,11 +598,17 @@ function addRow(tableId, row, columnClassMap) {
 			var fieldClass = columnClassMap[columnKey];
 			if (fieldClass == 'date') {
 				fieldClass = isNumber(columnValue) ? 'javaDate' : 'stringDate';
+			} else if (fieldClass == 'dateTime') {
+				fieldClass = isNumber(columnValue) ? 'javaDateTime' : 'stringDateTime';
 			}
 			if (fieldClass == 'javaDate') {// TODO Also consider the date time format.
 				rowExcerpt[columnKey] = convertJavaDate2MonthDayAndYear(columnValue);
 			} else if (fieldClass == 'stringDate') {
 				rowExcerpt[columnKey] = convertStringDate2MonthDayAndYear(columnValue);
+			} else if (fieldClass == 'javaDateTime') {
+				rowExcerpt[columnKey] = convertJavaDate2MonthDayYearHourMinuteAndSecond(columnValue);
+			} else if (fieldClass == 'stringDateTime') {
+				rowExcerpt[columnKey] = convertStringDate2MonthDayYearHourMinuteAndSecond(columnValue);
 			} else if (includes(fieldClass, 'alias')) {
 				var conversionMap = JSON.parse(fieldClass.substring(fieldClass.indexOf(':') + 1).replace(/'/g, '"'));
 				rowExcerpt[columnKey] = conversionMap[columnValue];
@@ -641,6 +647,10 @@ function convertStringDate2MonthDayAndYear(string) {// Example : 2017/07/04 19:0
 	return month + '/' + day + '/' + year;
 }
 
+function convertStringDate2MonthDayYearHourMinuteAndSecond(string) {// Example : 2017/07/04 19:00:00
+	return convertStringDate2MonthDayAndYear(string) + ' ' + string.substring(string.indexOf(' ') + 1);
+}
+
 function convertJavaDate2MonthDayAndYear(object) {// Object can either be number or string.
 	var date = JSON.stringify(new Date(Number(object)));
 	date = date.substring(1, date.length - 1);
@@ -650,6 +660,15 @@ function convertJavaDate2MonthDayAndYear(object) {// Object can either be number
 	var day = yearMonthAndYear[2];
 	var year = yearMonthAndYear[0];
 	return month + '/' + day + '/' + year;
+}
+
+function convertJavaDate2MonthDayYearHourMinuteAndSecond(object) {// Object can either be number or string.
+	var dateTime = JSON.stringify(new Date(Number(object)));
+	var time = dateTime.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('.')).split(':');
+	var hour = time[0];
+	var minute = time[1];
+	var second = time[2];
+	return convertJavaDate2MonthDayAndYear(object) + ' ' + hour + ':' + minute + ':' + second;
 }
 
 function sort(objects, sortField, order) {

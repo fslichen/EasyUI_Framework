@@ -1,7 +1,6 @@
 package evolution.controller;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
@@ -15,10 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class AnyController {
 	@PostMapping("/find")
 	public JsResponse<AnyPojo> find(@RequestBody AnyPojo anyPojo) throws ParseException {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		System.out.println(anyPojo);
-		AnyPojo anyPojo0 = new AnyPojo("Chen", "M", simpleDateFormat.parse("07/30/2017"), "fslichen@126.com", "<h1>Hello World</h1>", new Date(), new Date(), new Date(), new Date(), "2017/07/04 19:00:00", "2017/07/04 19:00:00");
-		AnyPojo anyPojo1 = new AnyPojo("Ling", "F", simpleDateFormat.parse("06/30/2017"), "fslingling@126.com", "<h1>Goodbye Past</h1>", new Date(), new Date(), new Date(), new Date(), "2017/07/04 19:00:00", "2017/07/04 19:00:00");
+		AnyPojo anyPojo0 = new AnyPojo();
+		anyPojo0.setName("Chen");
+		anyPojo0.setGender("M");
+		anyPojo0.setBirthday(new Date());
+		anyPojo0.setEmail("fslichen@126.com");
+		anyPojo0.setAnniversary(new Date());
+		AnyPojo anyPojo1 = new AnyPojo();
+		anyPojo1.setName("Ling");
+		anyPojo1.setGender("F");
+		anyPojo1.setBirthday(new Date());
+		anyPojo1.setEmail("fsling@163.com");
+		anyPojo1.setAnniversary(new Date());
 		List<AnyPojo> anyPojos = new LinkedList<>();
 		for (int i = 0; i < 113; i++) {
 			anyPojos.addAll(Arrays.asList(anyPojo0, anyPojo1));

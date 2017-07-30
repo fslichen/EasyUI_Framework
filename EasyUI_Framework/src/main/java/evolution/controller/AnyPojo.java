@@ -2,13 +2,18 @@ package evolution.controller;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class AnyPojo {
 	private String name;
 	private String gender;
+	@JsonFormat(pattern = "MM/dd/yyyy")
 	private Date birthday;
 	private String email;
 	private String message;
+	@JsonFormat(pattern = "MM/dd/yyyy")
 	private Date startDate;
+	@JsonFormat(pattern = "MM/dd/yyyy")
 	private Date endDate;
 	private Date endDateConverted;
 	private Date anniversary;
@@ -19,97 +24,83 @@ public class AnyPojo {
 	public AnyPojo() {
 
 	}
-	public AnyPojo(String name, String gender, Date birthday, String email, String message, Date startDate,
-			Date endDate, Date endDateConverted, Date anniversary, String type, String executionDate) {
-		this.name = name;
-		this.gender = gender;
-		this.birthday = birthday;
-		this.email = email;
-		this.message = message;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.endDateConverted = endDateConverted;
-		this.anniversary = anniversary;
-		this.type = type;
-		this.executionDate = executionDate;
-	}
-	public Date getAnniversary() {
-		return anniversary;
-	}
-	public Date getBirthday() {
-		return birthday;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public Date getEndDate() {
-		return endDate;
-	}
-	public Date getEndDateConverted() {
-		return endDateConverted;
-	}
-	public String getExecutionDate() {
-		return executionDate;
-	}
-	public String getGender() {
-		return gender;
-	}
-	public String getMessage() {
-		return message;
-	}
 	public String getName() {
 		return name;
-	}
-	public Integer getPageIndex() {
-		return pageIndex;
-	}
-	public Integer getPageSize() {
-		return pageSize;
-	}
-	public Date getStartDate() {
-		return startDate;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setAnniversary(Date anniversary) {
-		this.anniversary = anniversary;
-	}
-	public void setBirthday(Date birthday) {
-		this.birthday = birthday;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
-	public void setEndDateConverted(Date endDateConverted) {
-		this.endDateConverted = endDateConverted;
-	}
-	public void setExecutionDate(String executionDate) {
-		this.executionDate = executionDate;
-	}
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-	public void setMessage(String message) {
-		this.message = message;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	public void setPageIndex(Integer pageIndex) {
-		this.pageIndex = pageIndex;
+	public String getGender() {
+		return gender;
 	}
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public Date getBirthday() {
+		return birthday;
+	}
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public Date getStartDate() {
+		return startDate;
 	}
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
+	public Date getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+	public Date getEndDateConverted() {
+		return endDateConverted;
+	}
+	public void setEndDateConverted(Date endDateConverted) {
+		this.endDateConverted = endDateConverted;
+	}
+	public Date getAnniversary() {
+		return anniversary;
+	}
+	public void setAnniversary(Date anniversary) {
+		this.anniversary = anniversary;
+	}
+	public String getType() {
+		return type;
+	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getExecutionDate() {
+		return executionDate;
+	}
+	public void setExecutionDate(String executionDate) {
+		this.executionDate = executionDate;
+	}
+	public Integer getPageIndex() {
+		return pageIndex;
+	}
+	public void setPageIndex(Integer pageIndex) {
+		this.pageIndex = pageIndex;
+	}
+	public Integer getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
 	}
 	@Override
 	public String toString() {

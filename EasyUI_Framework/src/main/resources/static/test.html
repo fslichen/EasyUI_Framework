@@ -5,13 +5,10 @@
 <title>Insert title here</title>
 <script type="text/javascript" src="easyui-framework.js"></script>
 <script type="text/javascript">
-	function sortObjects() {
-		var array = sort([{name : 'Chen', age : 27}, {name : 'Ling', age : 26}], 'age', true);
-		alert(JSON.stringify(array));
-	}
+alert(convertJavaDate2MonthDayYearHourMinuteAndSecond('1501400181499'));
+alert(convertStringDate2MonthDayYearHourMinuteAndSecond('2017/07/04 19:00:00'));
 </script>
 </head>
 <body>
-	<input type="button" value="Click" onclick="sortObjects()" />
 </body>
 </html>
