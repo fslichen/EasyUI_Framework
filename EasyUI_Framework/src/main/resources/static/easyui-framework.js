@@ -441,7 +441,7 @@ function print(tableId, pageIndex, pageSize) {
 	deleteRows(tableId);
 	if (data.localPagination) {// The page index and page size are required in local pagination because all the data are stored in JS, thereby it is unlikely to print all the data all at once.
 		pageIndex = pageIndex == null ? 1 : pageIndex;
-		pageSize = pageSize == null ? 10 : pageSize;
+		pageSize = pageSize == null ? getPageSize(tableId) : pageSize;
 		firstIndex = (pageIndex - 1) * pageSize;
 		lastIndex = Math.min(pageIndex * pageSize, responseData.length);
 		$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
@@ -535,12 +535,16 @@ function postForm(url, id, callBackFunction) {// ID is mostly dialog ID.
 	return true;
 }
 
-function setPageIndex(tableId, pageIndex) {
+function setPageIndexAndPageSize(tableId, pageIndex, pageSize) {
 	if (pageIndex == null) {
 		pageIndex = 1;
 	}
+	if (pageSize == null) {
+		pageSize = 10;
+	}
 	$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
-		pageNumber : pageIndex
+		pageNumber : pageIndex,
+		pageSize : pageSize
 	});
 }
 
@@ -548,7 +552,7 @@ function postFormAndPrint(url, id, tableId) {// ID is mostly dialog ID.
 	if (!validateForm(id)) {
 		return false;
 	}
-	setPageIndex(tableId, 1);
+	setPageIndexAndPageSize(tableId, 1, getPageSize(tableId));
 	postAndPrint(url, getRequestData(id), tableId);
 	closeDialog(id);
 	return true;
