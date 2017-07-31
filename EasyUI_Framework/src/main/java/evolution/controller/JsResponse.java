@@ -1,10 +1,18 @@
 package evolution.controller;
 
 import java.util.List;
+import java.util.Map;
 
 public class JsResponse<T> {
 	private String message;
 	private List<T> data;
+	private Map<String, Object> responseFields;
+	public Map<String, Object> getResponseFields() {
+		return responseFields;
+	}
+	public void setResponseFields(Map<String, Object> responseFields) {
+		this.responseFields = responseFields;
+	}
 	public String getMessage() {
 		return message;
 	}

@@ -37,7 +37,7 @@ $(document).ready(function() {
 	<input type="button" value="Post Row" onclick="postFields('find', {'gender' : 'M'}, 'output', null)" />
 	<input type="button" value="MergeMaps" onclick="mergeMaps([{'name':'Chen'}, {'gender':'M'}], false)" />
 	<input type="button" value="Confirm" onclick="confirm('Hello World', '你好世界', function() {alert('ok')})"/>
-	<input type="button" value="Set Value" onclick="setFieldValue('toolbar', 'message', 'Hello World')"/>
+	<input type="button" value="Set Value" onclick="setFieldUnderParent('toolbar', 'message', 'Hello World')"/>
 	<!-- Tool Bar -->
 	<div id="toolbar">
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('findDialog', 'Find')">Find</a>
@@ -81,7 +81,7 @@ $(document).ready(function() {
 		</div>
 	</div>
 	<div id="findDialogButtons">
-		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postFormAndPrint('find', 'findDialog', 'output')" style="width:90px">Find</a>
+		<a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="postFormAndPrint('find', 'findDialog', 'output', {'message' : 'toolbar'})" style="width:90px">Find</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="closeDialog('findDialog')" style="width:90px">Cancel</a>
 	</div>	
 

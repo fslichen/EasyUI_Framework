@@ -3,8 +3,10 @@ package evolution.controller;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +43,9 @@ public class AnyController {
 		} else {
 			response.setData(anyPojos);
 		}
+		Map<String, Object> responseFields = new LinkedHashMap<>();
+		responseFields.put("message", "Hello World");
+		response.setResponseFields(responseFields);
 		return response;
 	}
 	

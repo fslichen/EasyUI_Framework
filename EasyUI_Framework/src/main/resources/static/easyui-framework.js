@@ -233,7 +233,7 @@ function getFieldValue(field) {
 	}
 }
 
-function setFieldValue(id, fieldKey, fieldValue) {// ID is mostly tool box ID.
+function setFieldUnderParent(id, fieldKey, fieldValue) {// ID is mostly tool box ID.
 	$('#' + id).find(getFormElements()).each(function () {
 		var field = $(this);
 		if (fieldKey == getFieldKey(field)) {
@@ -491,7 +491,7 @@ function getPageSize(tableId) {
 	return $('#' + tableId + 'Pagination').pagination('options').pageSize;
 }
 
-function postAndPrint(url, requestData, tableId) {
+function postAndPrint(url, requestData, tableId, parentIdMap) {
 	requestData = requestData == null ? {} : requestData;
 	setCachedRequestData(url, requestData, tableId);// Set the URL and request data associated with a table ID. 
 	if (!data['localPagination']) {
@@ -507,6 +507,7 @@ function postAndPrint(url, requestData, tableId) {
 		requestData['pageSize'] = pageSize;
 	}
 	post(url, requestData, function() {
+		// TODO Make it concise as response grid.
 		var responseData = this.responseData;// The field name for response data is 'responseData'.
 		if (responseData == null) {
 			responseData = this.data;// The secondary field name for response data is 'data'.
@@ -517,8 +518,13 @@ function postAndPrint(url, requestData, tableId) {
 		if (responseData != null) {
 			setResponseData(tableId, responseData);// Set the response data for a given data grid.
 			print(tableId);
-		} else {
-			info("Failed to receive the response data. Make sure the field name for response data is 'responseData', 'data' or 'responseGrid'.", '未能成功获取返回数据');
+		} 
+		// Response Fields
+		var responseFields = this.responseFields;
+		if (responseFields != null && parentIdMap != null) {
+			for (var i in responseFields) {
+				setFieldUnderParent(parentIdMap[i], i, responseFields[i]);
+			}
 		}
 	});
 }
@@ -564,13 +570,28 @@ function setPageIndexAndPageSize(tableId, pageIndex, pageSize) {
 	});
 }
 
-function postFormAndPrint(url, id, tableId) {// ID is mostly dialog ID.
+function postFormAndPrint(url, id, tableId, parentIdMap) {// ID is mostly dialog ID.
 	if (!validateForm(id)) {
 		return false;
 	}
 	setPageIndexAndPageSize(tableId, 1, getPageSize(tableId));
-	postAndPrint(url, getRequestData(id), tableId);
+	postAndPrint(url, getRequestData(id), tableId, parentIdMap);
 	closeDialog(id);
+	return true;
+}
+
+function postFormAndSetFields(url, id) {// ID is mostly tool box ID.
+	if (!validateForm(id)) {
+		return false;
+	}
+	post(url, getRequestData(id), function() {
+		var responseFields = this.responseFields;
+		if (responseFields != null) {
+			for (var i in responseFields) {
+				setFieldUnderParent(id, i, responseFields[i]);
+			}
+		}
+	});
 	return true;
 }
 
