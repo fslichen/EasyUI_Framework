@@ -36,7 +36,8 @@ $(document).ready(function() {
 	<input type="button" value="Alter Table" onclick="alterTable('output', {'name' : 'Name', 'gender' : 'Gender'})" />
 	<input type="button" value="Post Row" onclick="postFields('find', {'gender' : 'M'}, 'output', null)" />
 	<input type="button" value="MergeMaps" onclick="mergeMaps([{'name':'Chen'}, {'gender':'M'}], false)" />
-	<input type="button" value="MergeMaps" onclick="confirm('Hello World', '你好世界', function() {alert('ok')})"/>
+	<input type="button" value="Confirm" onclick="confirm('Hello World', '你好世界', function() {alert('ok')})"/>
+	<input type="button" value="Set Value" onclick="setFieldValue('toolbar', 'message', 'Hello World')"/>
 	<!-- Tool Bar -->
 	<div id="toolbar">
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('findDialog', 'Find')">Find</a>
@@ -44,6 +45,7 @@ $(document).ready(function() {
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="openDialog('updateDialog', 'Update', 'output')">Update</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="openDialog('deleteDialog', 'Delete', 'output')">Delete</a>
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="deleteRows('output')">Clear</a>
+		Message:<input class="easyui-textbox" name="message" type="text" />
 	</div>
 	
 	<!-- Find Dialog -->

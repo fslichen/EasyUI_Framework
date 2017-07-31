@@ -233,6 +233,22 @@ function getFieldValue(field) {
 	}
 }
 
+function setFieldValue(id, fieldKey, fieldValue) {// ID is mostly tool box ID.
+	$('#' + id).find(getFormElements()).each(function () {
+		var field = $(this);
+		if (fieldKey == getFieldKey(field)) {
+			var fieldClass = field.attr('class');
+			if (isEasyUiField(fieldClass)) {
+				field.textbox('setText', fieldValue);
+			} else if (fieldClass == 'richTextEditor') {
+				tinymce.get(fieldKey).setContent(fieldValue);
+			} else {
+				field.val(fieldValue);
+			}
+		}
+	});
+}
+
 function validateForm(id) {// ID is mostly dialog ID.
 	var fieldMap = {};
 	var labelMap = {};
