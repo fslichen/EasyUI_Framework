@@ -37,8 +37,9 @@ $(document).ready(function() {
 	<input type="button" value="Post Fields" onclick="postFields('find', {'gender' : 'M'}, 'output', null)" />
 	<input type="button" value="Post Fields And Print" onclick="postFieldsAndPrint('find', {'gender' : 'M'}, 'output', null, 'output', null)" />
 	<input type="button" value="MergeMaps" onclick="mergeMaps([{'name':'Chen'}, {'gender':'M'}], false)" />
-	<input type="button" value="Confirm" onclick="confirm('Hello World', '你好世界', function() {alert('ok')})"/>
-	<input type="button" value="Set Value" onclick="setFieldUnderParent('toolbar', 'message', 'Hello World')"/>
+	<input type="button" value="Confirm" onclick="confirm('Hello World', '你好世界', function() {alert('ok')})" />
+	<input type="button" value="Set Value" onclick="setFieldUnderParent('toolbar', 'message', 'Hello World')" />
+	<input type="button" value="Get Selected Rows" onclick="getSelectedRows('output')" />
 	<!-- Tool Bar -->
 	<div id="toolbar">
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('findDialog', 'Find')">Find</a>
@@ -167,9 +168,10 @@ $(document).ready(function() {
 		<!-- Output -->
 		<table id="output" title="Output" class="easyui-datagrid"
 				toolbar="#toolbar" pagination="false"
-				rownumbers="true" fitColumns="true" singleSelect="true">
+				rownumbers="true" fitColumns="true" singleSelect="false">
 			<thead>
 				<tr>
+					<th field="checkbox" checkbox="true"></th>
 					<th field="name" width="50" sortable="true">Name</th>
 					<th field="nameAlias" class="alias:{'Chen' : 'Chen_Li'}" width="50" sortable="true">Name Alias</th>
 					<th field="gender" width="50" sortable="true">Gender</th>

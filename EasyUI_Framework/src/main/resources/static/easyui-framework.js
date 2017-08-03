@@ -52,9 +52,8 @@ function getFieldMap(fieldKeys, row, fieldMap, overwrite) {
 }
 
 // Merge the customized field map and the field map extracted from a row.
-function mergeFieldMaps(fieldMap, tableId, fieldKeys) {
+function mergeFieldMaps(fieldMap, row, fieldKeys) {
 	var mergedFieldMap = null;
-	var row = getSelectedRow(tableId);
 	if (row != null) {
 		if (fieldKeys != null) {
 			mergedFieldMap = getFieldMap(fieldKeys, row, fieldMap, false);
@@ -67,12 +66,22 @@ function mergeFieldMaps(fieldMap, tableId, fieldKeys) {
 	return mergedFieldMap;
 }
 
+function postFieldsInBatch(url, fieldMap, tableId, fieldKeys, callBackFunction) {
+	var rows = getSelectedRows(tableId);
+	for (var i = 0; i < rows.length; i++) {
+		post(url, mergeFieldMaps(fieldMap, rows[i], fieldKeys));
+	}
+	if (callBackFunction != null) {
+		callBackFunction.call();
+	}
+}
+
 function postFields(url, fieldMap, tableId, fieldKeys, callBackFunction) {
-	post(url, mergeFieldMaps(fieldMap, tableId, fieldKeys), callBackFunction);
+	post(url, mergeFieldMaps(fieldMap, getSelectedRow(tableId), fieldKeys), callBackFunction);
 }
 
 function postFieldsAndPrint(url, sourceFieldMap, sourceTableId, sourceFieldKeys, targetTableId, targetParentIdMap) {
-	postAndPrint(url, mergeFieldMaps(sourceFieldMap, sourceTableId, sourceFieldKeys), targetTableId, targetParentIdMap);
+	postAndPrint(url, mergeFieldMaps(sourceFieldMap, getSelectedRow(sourceTableId), sourceFieldKeys), targetTableId, targetParentIdMap);
 }
 
 function setFormValidation(id, category, validationCriteria) {// ID is mostly dialog ID; Ascending
@@ -740,6 +749,10 @@ function sort(objects, sortField, order) {
 		}
 		return (order == null || order == true) ? result : result * -1;
 	});
+}
+
+function getSelectedRows(tableId) {
+	return $('#' + tableId).datagrid('getSelections');
 }
 
 function getSelectedRow(tableId) {
