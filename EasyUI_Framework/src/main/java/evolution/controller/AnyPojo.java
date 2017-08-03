@@ -16,6 +16,7 @@ public class AnyPojo {
 	@JsonFormat(pattern = "MM/dd/yyyy")
 	private Date endDate;
 	private Date endDateConverted;
+	@JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
 	private Date anniversary;
 	private String type;
 	private String executionDate;

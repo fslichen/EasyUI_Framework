@@ -51,17 +51,28 @@ function getFieldMap(fieldKeys, row, fieldMap, overwrite) {
 	return fieldMap;
 }
 
-function postFields(url, fieldMap, tableId, fieldKeys, callBackFunction) {
+// Merge the customized field map and the field map extracted from a row.
+function mergeFieldMaps(fieldMap, tableId, fieldKeys) {
+	var mergedFieldMap = null;
 	var row = getSelectedRow(tableId);
 	if (row != null) {
 		if (fieldKeys != null) {
-			post(url, getFieldMap(fieldKeys, row, fieldMap, false), callBackFunction);
+			mergedFieldMap = getFieldMap(fieldKeys, row, fieldMap, false);
 		} else {
-			post(url, mergeMaps([fieldMap, row], false), callBackFunction);
+			mergedFieldMap = mergeMaps([fieldMap, row], false);
 		}
 	} else {
-		post(url, fieldMap, callBackFunction);
+		mergedFieldMap = fieldMap;
 	}
+	return mergedFieldMap;
+}
+
+function postFields(url, fieldMap, tableId, fieldKeys, callBackFunction) {
+	post(url, mergeFieldMaps(fieldMap, tableId, fieldKeys), callBackFunction);
+}
+
+function postFieldsAndPrint(url, sourceFieldMap, sourceTableId, sourceFieldKeys, targetTableId, targetParentIdMap) {
+	postAndPrint(url, mergeFieldMaps(sourceFieldMap, sourceTableId, sourceFieldKeys), targetTableId, targetParentIdMap);
 }
 
 function setFormValidation(id, category, validationCriteria) {// ID is mostly dialog ID; Ascending

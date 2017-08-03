@@ -34,7 +34,8 @@ $(document).ready(function() {
 <body>
 	<!-- For Fun -->
 	<input type="button" value="Alter Table" onclick="alterTable('output', {'name' : 'Name', 'gender' : 'Gender'})" />
-	<input type="button" value="Post Row" onclick="postFields('find', {'gender' : 'M'}, 'output', null)" />
+	<input type="button" value="Post Fields" onclick="postFields('find', {'gender' : 'M'}, 'output', null)" />
+	<input type="button" value="Post Fields And Print" onclick="postFieldsAndPrint('find', {'gender' : 'M'}, 'output', null, 'output', null)" />
 	<input type="button" value="MergeMaps" onclick="mergeMaps([{'name':'Chen'}, {'gender':'M'}], false)" />
 	<input type="button" value="Confirm" onclick="confirm('Hello World', '你好世界', function() {alert('ok')})"/>
 	<input type="button" value="Set Value" onclick="setFieldUnderParent('toolbar', 'message', 'Hello World')"/>
