@@ -5,6 +5,21 @@ function getSelectedRows(tableId) {
 	return $('#' + tableId).datagrid('getSelections');
 }
 
+function clearForm(id) {// ID is mostly dialog ID.
+	$('#' + id).find(getFormElements()).each(function () {
+		var field = $(this);
+		var fieldKey = getFieldKey(field);
+		var fieldClass = field.attr('class');
+		if (isEasyUiField(fieldClass)) {
+			field.textbox('setText', '');
+		} else if (fieldClass == "richTextEditor") {
+			setRichText(fieldKey, '');
+		} else {
+			field.val('');
+		}
+	});
+}
+
 function confirm(englishInfo, chineseInfo, callBackFunction) {
 	function proceed(confirmed) {
 		if (confirmed) {
@@ -597,6 +612,7 @@ function postFormAndPrint(url, id, tableId, parentIdMap) {// ID is mostly dialog
 	setPageIndexAndPageSize(tableId, 1, getPageSize(tableId));
 	postAndPrint(url, getRequestData(id), tableId, parentIdMap);
 	closeDialog(id);
+	clearForm(id);
 	return true;
 }
 
