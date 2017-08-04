@@ -648,13 +648,15 @@ function addRow(tableId, row, columnClassMap) {
 	for (var i = 0; i < columnKeys.length; i++) {
 		var columnKey = columnKeys[i];
 		var columnValue = null;
+		var fieldClass = columnClassMap[columnKey];
 		if (includes(columnKey, 'Alias')) {
 			columnValue = row[columnKey.substring(0, columnKey.indexOf('Alias'))];
+		} else if (includes(fieldClass, 'copy')) {
+			columnValue = row[fieldClass.substring(fieldClass.indexOf(':') + 1)];
 		} else {
 			columnValue = row[columnKey];
 		}
 		if (columnValue != null) {
-			var fieldClass = columnClassMap[columnKey];
 			if (fieldClass == 'date') {
 				fieldClass = isNumber(columnValue) ? 'javaDate' : 'stringDate';
 			} else if (fieldClass == 'dateTime') {
