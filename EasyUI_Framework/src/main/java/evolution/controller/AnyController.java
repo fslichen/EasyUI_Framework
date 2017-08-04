@@ -23,6 +23,7 @@ public class AnyController {
 		anyPojo0.setBirthday(new Date());
 		anyPojo0.setEmail("fslichen@126.com");
 		anyPojo0.setAnniversary(new Date());
+		anyPojo0.setMessage("<h1>Hello World</h1>");
 		AnyPojo anyPojo1 = new AnyPojo();
 		anyPojo1.setName("Ling");
 		anyPojo1.setGender("F");

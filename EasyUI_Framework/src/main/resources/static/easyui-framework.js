@@ -474,10 +474,6 @@ function post(url, requestData, callBack) {
 		    	}
 	    }
 	});
-	// Clear Form Data
-	try {
-		tinymce.activeEditor.setContent('');
-	} catch (e) {}
 }
 
 // Print
@@ -589,6 +585,7 @@ function postForm(url, id, callBackFunction) {// ID is mostly dialog ID.
 	}
 	post(url, getRequestData(id), callBackFunction);
 	closeDialog(id);
+	clearForm(id);
 	return true;
 }
 
@@ -613,21 +610,6 @@ function postFormAndPrint(url, id, tableId, parentIdMap) {// ID is mostly dialog
 	postAndPrint(url, getRequestData(id), tableId, parentIdMap);
 	closeDialog(id);
 	clearForm(id);
-	return true;
-}
-
-function postFormAndSetFields(url, id) {// ID is mostly tool box ID.
-	if (!validateForm(id)) {
-		return false;
-	}
-	post(url, getRequestData(id), function() {
-		var responseFields = this.responseFields;
-		if (responseFields != null) {
-			for (var i in responseFields) {
-				setFieldUnderParent(id, i, responseFields[i]);
-			}
-		}
-	});
 	return true;
 }
 
