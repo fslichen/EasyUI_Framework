@@ -6,6 +6,9 @@ function getSelectedRows(tableId) {
 }
 
 function clearForm(id) {// ID is mostly dialog ID.
+	if (data['clearForm'] == false) {
+		return;
+	}
 	$('#' + id).find(getFormElements()).each(function () {
 		var field = $(this);
 		var fieldKey = getFieldKey(field);
@@ -146,6 +149,7 @@ function initialize() {
 	// Initial Configurations
 	data['language'] = 'English';
 	data['localPagination'] = true;
+	data['clearForm'] = false;
 	// Initialize rich text editors.
 	tinymce.init({
 		selector : '.richTextEditor'// Rich text editor is created by setting class attribute as richTextEditor in text area.
