@@ -98,8 +98,8 @@ function postFields(url, fieldMap, tableId, fieldKeys, callBackFunction) {
 	post(url, mergeFieldMaps(fieldMap, getSelectedRow(tableId), fieldKeys), callBackFunction);
 }
 
-function postFieldsAndPrint(url, sourceFieldMap, sourceTableId, sourceFieldKeys, targetTableId, targetParentIdMap) {
-	postAndPrint(url, mergeFieldMaps(sourceFieldMap, getSelectedRow(sourceTableId), sourceFieldKeys), targetTableId, targetParentIdMap);
+function postFieldsAndPrint(url, sourceFieldMap, sourceTableId, sourceFieldKeys, targetTableId, targetParentIdMap, callBackFunction) {
+	postAndPrint(url, mergeFieldMaps(sourceFieldMap, getSelectedRow(sourceTableId), sourceFieldKeys), targetTableId, targetParentIdMap, callBackFunction);
 }
 
 function setFormValidation(id, category, validationCriteria) {// ID is mostly dialog ID; Ascending
@@ -136,9 +136,26 @@ function getCachedRequestData(tableId) {
 	return data.requestData[tableId];
 }
 
+function setCache(cacheId, cachedData) {
+	data['cache'][cacheId] = cachedData;
+}
+
+function getCache(cacheId) {
+	return data['cache'][cacheId];
+}
+
+function setCachedSelectedRow(tableId) {
+	setCache('tableId:' + tableId, getSelectedRow(tableId));
+}
+
+function getCachedSelectedRow(tableId) {
+	return getCache('tableId:' + tableId);
+}
+
 function initialize() {
 	// Initialize Data
 	data = {};
+	data['cache'] = {};
 	data['clickCount'] = {};// Table ID Related
 	data['responseData'] = {};// Table ID Related
 	data['requestData'] = {};// Table ID Related
@@ -526,7 +543,7 @@ function getPageSize(tableId) {
 	return $('#' + tableId + 'Pagination').pagination('options').pageSize;
 }
 
-function postAndPrint(url, requestData, tableId, parentIdMap) {
+function postAndPrint(url, requestData, tableId, parentIdMap, callBackFunction) {
 	requestData = requestData == null ? {} : requestData;
 	setCachedRequestData(url, requestData, tableId);// Set the URL and request data associated with a table ID. 
 	if (!data['localPagination']) {
@@ -560,6 +577,10 @@ function postAndPrint(url, requestData, tableId, parentIdMap) {
 			for (var i in responseFields) {
 				setFieldUnderParent(parentIdMap[i], i, responseFields[i]);
 			}
+		}
+		// Call Back Function
+		if (callBackFunction != null) {
+			callBackFunction.call();
 		}
 	});
 }
@@ -606,12 +627,12 @@ function setPageIndexAndPageSize(tableId, pageIndex, pageSize) {
 	});
 }
 
-function postFormAndPrint(url, id, tableId, parentIdMap) {// ID is mostly dialog ID.
+function postFormAndPrint(url, id, tableId, parentIdMap, callBackFunction) {// ID is mostly dialog ID.
 	if (!validateForm(id)) {
 		return false;
 	}
 	setPageIndexAndPageSize(tableId, 1, getPageSize(tableId));
-	postAndPrint(url, getRequestData(id), tableId, parentIdMap);
+	postAndPrint(url, getRequestData(id), tableId, parentIdMap, callBackFunction);
 	closeDialog(id);
 	clearForm(id);
 	return true;
