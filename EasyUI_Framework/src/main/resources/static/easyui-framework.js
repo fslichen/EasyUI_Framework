@@ -145,11 +145,26 @@ function getCache(cacheId) {
 }
 
 function setCachedSelectedRow(tableId) {
-	setCache('tableId:' + tableId, getSelectedRow(tableId));
+	setCache('selectedRowTableId:' + tableId, getSelectedRow(tableId));
 }
 
 function getCachedSelectedRow(tableId) {
-	return getCache('tableId:' + tableId);
+	return getCache('selectedRowTableId:' + tableId);
+}
+
+function setCachedForm(id, requestData) {// ID is mostly dialog ID
+	if (data['cacheForm'] == false) {
+		return;
+	}
+	if (requestData != null) {
+		setCache('formDialogId:' + id, requestData);
+	} else {
+		setCache('formDialogId:' + id, getRequestData(id));
+	}
+}
+
+function getCachedForm(id) {// ID is mostly dialog ID
+	return getCache('formDialogId:' + id);
 }
 
 function initialize() {
@@ -167,6 +182,7 @@ function initialize() {
 	data['language'] = 'English';
 	data['localPagination'] = true;
 	data['clearForm'] = false;
+	data['cacheForm'] = true;
 	// Initialize rich text editors.
 	tinymce.init({
 		selector : '.richTextEditor'// Rich text editor is created by setting class attribute as richTextEditor in text area.
@@ -608,8 +624,10 @@ function postForm(url, id, callBackFunction) {// ID is mostly dialog ID.
 	if (!validateForm(id)) {
 		return false;
 	}
-	post(url, getRequestData(id), callBackFunction);
+	var requestData = getRequestData(id);
+	post(url, requestData, callBackFunction);
 	closeDialog(id);
+	setCachedForm(id, requestData);
 	clearForm(id);
 	return true;
 }
@@ -632,8 +650,10 @@ function postFormAndPrint(url, id, tableId, parentIdMap, callBackFunction) {// I
 		return false;
 	}
 	setPageIndexAndPageSize(tableId, 1, getPageSize(tableId));
-	postAndPrint(url, getRequestData(id), tableId, parentIdMap, callBackFunction);
+	var requestData = getRequestData(id);
+	postAndPrint(url, requestData, tableId, parentIdMap, callBackFunction);
 	closeDialog(id);
+	setCachedForm(id, requestData);
 	clearForm(id);
 	return true;
 }

@@ -42,6 +42,7 @@ $(document).ready(function() {
 	<input type="button" value="Set Value" onclick="setFieldUnderParent('toolbar', 'message', 'Hello World')" />
 	<input type="button" value="Get Selected Rows" onclick="getSelectedRows('output')" />
 	<input type="button" value="Set Cached Selected Row" onclick="setCachedSelectedRow('output');alert(JSON.stringify(getCachedSelectedRow('output')))" />
+	<input type="button" value="Get Cached Form" onclick="alert(JSON.stringify(getCachedForm('findDialog')))" />
 	<!-- Tool Bar -->
 	<div id="toolbar">
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('findDialog', 'Find')">Find</a>
