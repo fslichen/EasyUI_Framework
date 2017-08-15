@@ -94,6 +94,14 @@ function postFieldsInBatch(url, fieldMap, tableId, fieldKeys, callBackFunction) 
 	}
 }
 
+function postMap(url, map, requestData, fieldKeys, callBackFunction) {
+	post(url, mergeFieldMaps(map, requestData, fieldKeys), callBackFunction);
+}
+
+function postMapAndPrint(url, map, requestData, fieldKeys, tableId, parentIdMap, callBackFunction) {
+	postAndPrint(url, mergeFieldMaps(map, requestData, fieldKeys), tableId, parentIdMap, callBackFunction);
+}
+
 function postFields(url, fieldMap, tableId, fieldKeys, callBackFunction) {
 	post(url, mergeFieldMaps(fieldMap, getSelectedRow(tableId), fieldKeys), callBackFunction);
 }
