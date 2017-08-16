@@ -329,6 +329,14 @@ function setFieldUnderParent(id, fieldKey, fieldValue) {// ID is mostly tool box
 	});
 }
 
+function getColumnValueFromTable(tableId, columnName) {
+	var row = getSelectedRow(tableId);
+	if (row != null) {
+		return row[columnName];
+	}
+	return null;
+}
+
 function validateForm(id) {// ID is mostly dialog ID.
 	var fieldMap = {};
 	var labelMap = {};
@@ -754,7 +762,12 @@ function addRow(tableId, row, columnClassMap) {
 				rowExcerpt[columnKey] = convertStringDate2MonthDayYearHourMinuteAndSecond(columnValue);
 			} else if (includes(fieldClass, 'alias')) {
 				var conversionMap = JSON.parse(fieldClass.substring(fieldClass.indexOf(':') + 1).replace(/'/g, '"'));
-				rowExcerpt[columnKey] = conversionMap[columnValue];
+				var columnAliasValue = conversionMap[columnValue];
+				if (columnAliasValue != null) {
+					rowExcerpt[columnKey] = columnAliasValue;
+				} else {
+					rowExcerpt[columnKey] = conversionMap['default'];
+				}
 			} else {
 				rowExcerpt[columnKey] = columnValue;
 			}
