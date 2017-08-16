@@ -46,6 +46,7 @@ public class AnyController {
 		}
 		Map<String, Object> responseFields = new LinkedHashMap<>();
 		responseFields.put("message", "Hello World");
+		responseFields.put("totalCount", 523);
 		response.setResponseFields(responseFields);
 		return response;
 	}

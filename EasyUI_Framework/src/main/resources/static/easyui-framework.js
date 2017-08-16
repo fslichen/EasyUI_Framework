@@ -455,28 +455,33 @@ function removeIndex(string) {
 	return string.substring(0, string.length - 1);// TOOD Up To 10 Indexes
 }
 
-function setForm(tableId, id) {// Set form by selected row; ID is mostly dialog ID.
-	var selectedRow = getSelectedRow(tableId);
-	if (selectedRow == null || getRowCount(tableId) == 0) {// No row is selected.
-		closeDialog(id);
-		info('Please select a row.', '请选择一行数据');
-		return;
-	}
+// ID is mostly dialog ID.
+function setFormByMap(id, map) {
 	$('#' + id).find(getFormElements()).each(function() {
-		var key = getFieldKey($(this));
-		if (key != null) {
-			var keyIndex = getIndex(key);
+		var fieldKey = getFieldKey($(this));
+		if (fieldKey != null) {
 			var fieldValue = null;
-			if (!isNaN(keyIndex)) {// Index Exists; Mostly Tiny MCE Case
-				fieldValue = selectedRow[removeIndex(key)];
+			if (!isNaN(getIndex(fieldKey))) {// Index Exists; Mostly Tiny MCE Case
+				fieldValue = map[removeIndex(fieldKey)];
 			} else {
-				fieldValue = selectedRow[key];
+				fieldValue = map[fieldKey];
 			}
 			if (fieldValue != null) {// Prevent setting null value into the field if the selected row does not contain the field.
 				setField($(this), fieldValue);
 			}
 		}
 	});
+}
+
+// ID is mostly dialog ID.
+function setFormByRow(tableId, id) {
+	var selectedRow = getSelectedRow(tableId);
+	if (selectedRow == null || getRowCount(tableId) == 0) {// No row is selected.
+		closeDialog(id);
+		info('Please select a row.', '请选择一行数据');
+		return;
+	}
+	setFormByMap(id, selectedRow);
 }
 
 function getRequestData(id) {// ID is mostly dialog ID.
@@ -526,6 +531,24 @@ function refresh(url, tableId) {
 	postAndPrint(url, null, tableId);
 }
 
+function getTotalCount(tableId) {
+	var pagination = data.pagination[tableId];
+	if (pagination != null) {
+		var totalCount = pagination.totalCount;
+		if (totalCount != null) {
+			return totalCount;
+		}
+	}
+	return 500;
+}
+
+function setTotalCount(tableId, totalCount) {
+	if (data.pagination[tableId] == null) {
+		data.pagination[tableId] = {}
+	}
+	data.pagination[tableId].totalCount = totalCount;
+}
+
 function print(tableId, pageIndex, pageSize) {
 	var firstIndex = null;
 	var lastIndex = null;
@@ -552,7 +575,7 @@ function print(tableId, pageIndex, pageSize) {
 			pageSize = 30;
 		}
 		$('#' + tableId + 'Pagination').pagination({// Pagination ID = Table ID + Pagination Label
-			total : 5000,// The exact total number of records is given by the query count SQL statement.
+			total : getTotalCount(tableId),// The exact total number of records is given by the query count SQL statement.
 			pageSize : pageSize
 		});
 	}
@@ -583,7 +606,20 @@ function postAndPrint(url, requestData, tableId, parentIdMap, callBackFunction) 
 		requestData['pageSize'] = pageSize;
 	}
 	post(url, requestData, function() {
-		// TODO Make it concise as response grid.
+		// Response Fields
+		var responseFields = this.responseFields;
+		if (responseFields != null) {
+			if (parentIdMap != null) {// Example : {'name' : 'anyPanel'}, which means the name field is located under the parent anyPanel.
+				for (var i in responseFields) {
+					setFieldUnderParent(parentIdMap[i], i, responseFields[i]);
+				}	
+			}
+			var totalCount = responseFields['totalCount'];
+			if (totalCount != null) {
+				setTotalCount(tableId, totalCount);
+			}
+		}
+		// Response Grid
 		var responseData = this.responseData;// The field name for response data is 'responseData'.
 		if (responseData == null) {
 			responseData = this.data;// The secondary field name for response data is 'data'.
@@ -594,13 +630,6 @@ function postAndPrint(url, requestData, tableId, parentIdMap, callBackFunction) 
 		if (responseData != null) {
 			setResponseData(tableId, responseData);// Set the response data for a given data grid.
 			print(tableId);
-		} 
-		// Response Fields
-		var responseFields = this.responseFields;
-		if (responseFields != null && parentIdMap != null) {
-			for (var i in responseFields) {
-				setFieldUnderParent(parentIdMap[i], i, responseFields[i]);
-			}
 		}
 		// Call Back Function
 		if (callBackFunction != null) {
@@ -849,7 +878,7 @@ function getResponseData(tableId) {
 function openDialog(dialogId, title, tableId) {
 	$('#' + dialogId).dialog('open').dialog('setTitle', title);
 	if (tableId != null) {
-		setForm(tableId, dialogId);// Plug the data in the selected row into the form.
+		setFormByRow(tableId, dialogId);// Plug the data in the selected row into the form.
 	}
 }
 
