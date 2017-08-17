@@ -780,8 +780,8 @@ function addRow(tableId, row, columnClassMap) {
 			rowExcerpt[columnKey] = null; 
 		}
 		if (includes(fieldClass, 'alias')) {
+			var conversionMap = JSON.parse(fieldClass.substring(fieldClass.indexOf(':') + 1).replace(/'/g, '"'));
 			if (columnValue != null) {
-				var conversionMap = JSON.parse(fieldClass.substring(fieldClass.indexOf(':') + 1).replace(/'/g, '"'));
 				var columnAliasValue = conversionMap[columnValue];
 				if (columnAliasValue != null) {
 					rowExcerpt[columnKey] = columnAliasValue;
