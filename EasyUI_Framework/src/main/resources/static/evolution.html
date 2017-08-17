@@ -44,7 +44,8 @@ $(document).ready(function() {
 	<input type="button" value="Set Cached Selected Row" onclick="setCachedSelectedRow('output');alert(JSON.stringify(getCachedSelectedRow('output')))" />
 	<input type="button" value="Get Cached Form" onclick="alert(JSON.stringify(getCachedForm('findDialog')))" />
 	<input type="button" value="Post Map" onclick="postMapAndPrint('find', {'gender' : 'M'}, {'name' : 'Chen'}, null, 'output')" />
-	<input type="button" value="Get Column" onclick="alert(getColumnValueFromTable('output', 'name'))" />
+	<input type="button" value="Get Column Value" onclick="alert(getColumnValueFromTable('output', 'name'))" />
+	<input type="button" value="Get Columns" onclick="getColumns('output')" />
 	<!-- Tool Bar -->
 	<div id="toolbar">
 		<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="openDialog('findDialog', 'Find')">Find</a>

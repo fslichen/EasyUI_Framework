@@ -5,6 +5,19 @@ function getSelectedRows(tableId) {
 	return $('#' + tableId).datagrid('getSelections');
 }
 
+function getColumns(tableId) {
+	var columns = [];
+	$('#' + tableId).find('th').each(function() {
+		var column = {};
+		column.fieldName = $(this).attr('field');
+		column.classValue = $(this).attr('class');
+		column.width = $(this).attr('width');
+		column.sortable = $(this).attr('sortable');
+		column.label = $(this).html();
+		columns.push(column);
+	});
+}
+
 function clearForm(id) {// ID is mostly dialog ID.
 	if (data['clearForm'] == false) {
 		return;
