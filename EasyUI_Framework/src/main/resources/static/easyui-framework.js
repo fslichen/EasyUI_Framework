@@ -760,7 +760,14 @@ function addRow(tableId, row, columnClassMap) {
 				rowExcerpt[columnKey] = convertJavaDate2MonthDayYearHourMinuteAndSecond(columnValue);
 			} else if (fieldClass == 'stringDateTime') {
 				rowExcerpt[columnKey] = convertStringDate2MonthDayYearHourMinuteAndSecond(columnValue);
-			} else if (includes(fieldClass, 'alias')) {
+			} else {
+				rowExcerpt[columnKey] = columnValue;
+			}
+		} else {
+			rowExcerpt[columnKey] = null; 
+		}
+		if (includes(fieldClass, 'alias')) {
+			if (columnValue != null) {
 				var conversionMap = JSON.parse(fieldClass.substring(fieldClass.indexOf(':') + 1).replace(/'/g, '"'));
 				var columnAliasValue = conversionMap[columnValue];
 				if (columnAliasValue != null) {
@@ -769,10 +776,8 @@ function addRow(tableId, row, columnClassMap) {
 					rowExcerpt[columnKey] = conversionMap['default'];
 				}
 			} else {
-				rowExcerpt[columnKey] = columnValue;
+				rowExcerpt[columnKey] = conversionMap['default'];
 			}
-		} else {
-			rowExcerpt[columnKey] = null; 
 		}
 	}
 	$('#' + tableId).datagrid('appendRow', rowExcerpt);
