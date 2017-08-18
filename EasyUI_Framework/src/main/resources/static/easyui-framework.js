@@ -842,6 +842,12 @@ function convertJavaDate2MonthDayYearHourMinuteAndSecond(object) {// Object can 
 	var hour = time[0];
 	var minute = time[1];
 	var second = time[2];
+	if (!isNumber(hour) || !isNumber(minute) || !isNumber(second)) {// Probably the user is using IE8
+		time = dateTime.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('Z')).split(':');
+		hour = time[0];
+		minute = time[1];
+		second = time[2];
+	}
 	return convertJavaDate2MonthDayAndYear(object) + ' ' + hour + ':' + minute + ':' + second;
 }
 
