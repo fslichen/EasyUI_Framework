@@ -630,7 +630,7 @@ function postAndPrint(url, requestData, tableId, parentIdMap, callBackFunction) 
 		var pageIndex = requestData['pageIndex'];
 		var pageSize = requestData['pageSize'];
 		if (pageIndex == null) {
-			pageIndex = 1;
+			pageIndex = 0;// This page index is for server side rather than easy-ui.
 		}
 		if (pageSize == null) {
 			pageSize = getPageSize(tableId);
@@ -873,11 +873,11 @@ function sort(objects, sortField, order) {
 		} else if (y == null) {
 			y = x;
 		}
-		if (typeof x === 'string' && typeof y === 'string') {
-			result = x.localeCompare(y);
-		} else if (typeof x === 'number' && typeof y === 'number') {
+		if (isNumber(x) && typeof isNumber(y)) {
 			result = x - y;
-		}
+		} else if (typeof x === 'string' && typeof y === 'string') {
+			result = x.localeCompare(y);
+		} 
 		return (order == null || order == true) ? result : result * -1;
 	});
 }
