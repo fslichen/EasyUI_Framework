@@ -188,6 +188,12 @@ function getCachedForm(id) {// ID is mostly dialog ID
 	return getCache('formDialogId:' + id);
 }
 
+function setPageIndex(tableId, pageIndex) {
+	$('#' + tableId + 'Pagination').pagination({
+		pageNumber : pageIndex
+	});
+}
+
 function initialize() {
 	// Initialize Data
 	data = {};
@@ -217,7 +223,13 @@ function initialize() {
 					print(tableId, pageIndex, pageSize);// The page index and page size are required in local pagination because only a portion of data is retrieved and printed from the cache.
 				} else {
 					var requestData = getCachedRequestData(tableId);
-					requestData['pageIndex'] = pageIndex;// The remote server accepts the pagination info.
+					var oldPageSize = requestData['pageSize'];
+					if (oldPageSize != null && oldPageSize != pageSize) {// When the page size changes, page index ought to equal 1.
+						requestData['pageIndex'] = 1;
+						setPageIndex(tableId, 1);
+					} else {
+						requestData['pageIndex'] = pageIndex;// The remote server accepts the pagination info.
+					}
 					requestData['pageSize'] = pageSize;
 					postAndPrint(requestData.url, requestData, tableId);// The page index and page size are not required in remote pagination because all the data retrieved from the server should be printed. 
 				}

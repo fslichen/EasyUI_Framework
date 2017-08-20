@@ -15,38 +15,33 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AnyController {
 	@PostMapping("/find")
-	public JsResponse<AnyPojo> find(@RequestBody AnyPojo anyPojo) throws ParseException {
-		System.out.println(anyPojo);
-		AnyPojo anyPojo0 = new AnyPojo();
-		anyPojo0.setName("Chen");
-		anyPojo0.setGender("M");
-		anyPojo0.setBirthday(new Date());
-		anyPojo0.setEmail("fslichen@126.com");
-		anyPojo0.setAnniversary(new Date());
-		anyPojo0.setMessage("<h1>Hello World</h1>");
-		AnyPojo anyPojo1 = new AnyPojo();
-		anyPojo1.setName("Ling");
-		anyPojo1.setGender("F");
-		anyPojo1.setBirthday(new Date());
-		anyPojo1.setEmail("fsling@163.com");
-		anyPojo1.setAnniversary(new Date());
-		List<AnyPojo> anyPojos = new LinkedList<>();
-		for (int i = 0; i < 113; i++) {
-			anyPojos.addAll(Arrays.asList(anyPojo0, anyPojo1));
+	public JsResponse<AnyPojo> find(@RequestBody AnyPojo requestPojo) throws ParseException {
+		System.out.println(requestPojo);
+		List<AnyPojo> responsePojos = new LinkedList<>();
+		int totalCount = 998;
+		for (int i = 0; i < totalCount; i++) {
+			AnyPojo responsePojo = new AnyPojo();
+			responsePojo.setName(i + "");
+			responsePojo.setGender("M");
+			responsePojo.setBirthday(new Date());
+			responsePojo.setEmail("fslichen@126.com");
+			responsePojo.setAnniversary(new Date());
+			responsePojo.setMessage("<h1>Hello World</h1>");
+			responsePojos.add(responsePojo);
 		}
 		JsResponse<AnyPojo> response = new JsResponse<>();
-		if (anyPojo.getPageSize() != null) {
+		if (requestPojo.getPageSize() != null) {
 			List<AnyPojo> anotherPojos = new LinkedList<>();
-			for (int i = 0; i < anyPojo.getPageSize(); i++) {
-				anotherPojos.add(anyPojos.get(i));
+			for (int i = 0; i < requestPojo.getPageSize(); i++) {
+				anotherPojos.add(responsePojos.get(i));
 			}
 			response.setData(anotherPojos);
 		} else {
-			response.setData(anyPojos);
+			response.setData(responsePojos);
 		}
 		Map<String, Object> responseFields = new LinkedHashMap<>();
 		responseFields.put("message", "Hello World");
-		responseFields.put("totalCount", 523);
+		responseFields.put("totalCount", totalCount);
 		response.setResponseFields(responseFields);
 		return response;
 	}
