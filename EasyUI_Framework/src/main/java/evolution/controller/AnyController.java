@@ -1,7 +1,6 @@
 package evolution.controller;
 
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -31,11 +30,13 @@ public class AnyController {
 		}
 		JsResponse<AnyPojo> response = new JsResponse<>();
 		if (requestPojo.getPageSize() != null) {
-			List<AnyPojo> anotherPojos = new LinkedList<>();
-			for (int i = 0; i < requestPojo.getPageSize(); i++) {
-				anotherPojos.add(responsePojos.get(i));
+			List<AnyPojo> responsePojosWithPagination = new LinkedList<>();
+			int pageIndex = requestPojo.getPageIndex();
+			int pageSize = requestPojo.getPageSize();
+			for (int i = pageIndex * pageSize; i < Math.min((pageIndex + 1) * pageSize, totalCount); i++) {
+				responsePojosWithPagination.add(responsePojos.get(i));
 			}
-			response.setData(anotherPojos);
+			response.setData(responsePojosWithPagination);
 		} else {
 			response.setData(responsePojos);
 		}

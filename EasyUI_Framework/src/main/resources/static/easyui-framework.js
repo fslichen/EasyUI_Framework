@@ -225,10 +225,10 @@ function initialize() {
 					var requestData = getCachedRequestData(tableId);
 					var oldPageSize = requestData['pageSize'];
 					if (oldPageSize != null && oldPageSize != pageSize) {// When the page size changes, page index ought to equal 1.
-						requestData['pageIndex'] = 1;
+						requestData['pageIndex'] = 0;// The page index in easy-ui starts from 1, while the page index on the server side starts from 0.
 						setPageIndex(tableId, 1);
 					} else {
-						requestData['pageIndex'] = pageIndex;// The remote server accepts the pagination info.
+						requestData['pageIndex'] = pageIndex - 1;// The remote server accepts the pagination info.
 					}
 					requestData['pageSize'] = pageSize;
 					postAndPrint(requestData.url, requestData, tableId);// The page index and page size are not required in remote pagination because all the data retrieved from the server should be printed. 
