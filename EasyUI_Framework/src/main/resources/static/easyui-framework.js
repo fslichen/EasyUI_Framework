@@ -554,6 +554,10 @@ function getRequestData(id) {// ID is mostly dialog ID.
 function post(url, requestData, callBack) {
 	if (requestData == null) {
 		requestData = {};
+	} else {
+		for (i in requestData) {
+			requestData[i] = replaceNormalCharactersByEscapeCharacters(requestData[i]);
+		}
 	}
 	$.ajax({
 		    url : url,
@@ -687,7 +691,11 @@ function postAndPrint(url, requestData, tableId, parentIdMap, callBackFunction) 
 }
 
 function includes(string, substring) {
-	return string != null && substring != null && string.indexOf(substring) !== -1;
+	if (string != null && substring != null) {
+		string = string + '';// Turn number into string.
+		return string.indexOf(substring) !== -1;
+	}
+	return false;
 }
 
 function isEasyUiField(fieldClass) {
