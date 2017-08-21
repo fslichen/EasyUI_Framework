@@ -278,6 +278,21 @@ function initialize() {
 	});
 }
 
+function replaceAll(data, oldSubString, newSubString) {
+	while (includes(data, oldSubString)) {
+		data = data.replace(oldSubString, newSubString);
+	}
+	return data;
+}
+
+function replaceNormalCharactersByEscapeCharacters(data) {
+	return replaceAll(data, '"', '&quot');
+}
+
+function replaceEscapeCharactersByNormalCharacters(data) {
+	return replaceAll(data, '&quot', '"');
+}
+
 function parent($object, generation) {
 	for (var i = 0; i < generation; i++) {
 		$object = $object.parent();
@@ -786,7 +801,7 @@ function addRow(tableId, row, columnClassMap) {
 			} else if (fieldClass == 'stringDateTime') {
 				rowExcerpt[columnKey] = convertStringDate2MonthDayYearHourMinuteAndSecond(columnValue);
 			} else {
-				rowExcerpt[columnKey] = columnValue;
+				rowExcerpt[columnKey] = replaceEscapeCharactersByNormalCharacters(columnValue);
 			}
 		} else {
 			rowExcerpt[columnKey] = null; 
