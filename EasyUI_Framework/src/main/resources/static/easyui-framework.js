@@ -878,7 +878,7 @@ function convertJavaDate2MonthDayYearHourMinuteAndSecond(object) {// Object can 
 	var minute = time[1];
 	var second = time[2];
 	if (!isNumber(hour) || !isNumber(minute) || !isNumber(second)) {// Probably the user is using IE8
-		object = Number(object) + 21 * 3600 * 1000;
+		object = Number(object) + 8 * 3600 * 1000;
 	    dateTime = JSON.stringify(new Date(object));
 		time = dateTime.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('Z')).split(':');
 		hour = time[0];
