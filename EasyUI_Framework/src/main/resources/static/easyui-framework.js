@@ -231,6 +231,7 @@ function initialize() {
 						requestData['pageIndex'] = pageIndex - 1;// The remote server accepts the pagination info.
 					}
 					requestData['pageSize'] = pageSize;
+					requestData['rowIndex'] = requestData['pageIndex'] * requestData['pageSize'];
 					postAndPrint(requestData.url, requestData, tableId);// The page index and page size are not required in remote pagination because all the data retrieved from the server should be printed. 
 				}
 			}
@@ -656,6 +657,7 @@ function postAndPrint(url, requestData, tableId, parentIdMap, callBackFunction) 
 		}
 		requestData['pageIndex'] = pageIndex;
 		requestData['pageSize'] = pageSize;
+		requestData['rowIndex'] = requestData['pageIndex'] * requestData['pageSize'];
 	}
 	post(url, requestData, function() {
 		// Response Fields
@@ -667,6 +669,9 @@ function postAndPrint(url, requestData, tableId, parentIdMap, callBackFunction) 
 				}	
 			}
 			var totalCount = responseFields['totalCount'];
+			if (totalCount == null) {
+				totalCount = responseFields['rowCount'];
+			}
 			if (totalCount != null) {
 				setTotalCount(tableId, totalCount);
 			}
