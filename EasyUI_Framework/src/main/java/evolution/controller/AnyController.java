@@ -22,7 +22,7 @@ public class AnyController {
 			AnyPojo responsePojo = new AnyPojo();
 			responsePojo.setName(i + "");
 			responsePojo.setGender("M");
-			responsePojo.setBirthday(new Date());
+			responsePojo.setBirthday(requestPojo.getBirthday());
 			responsePojo.setEmail("fslichen@126.com");
 			responsePojo.setAnniversary(new Date());
 			responsePojo.setMessage("<h1>&quotHello World&quot</h1>");

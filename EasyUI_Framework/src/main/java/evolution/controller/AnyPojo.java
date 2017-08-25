@@ -7,16 +7,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class AnyPojo {
 	private String name;
 	private String gender;
-	@JsonFormat(pattern = "MM/dd/yyyy")
+	@JsonFormat(pattern = "MM/dd/yyyy", timezone = "GMT+8")
 	private Date birthday;
 	private String email;
 	private String message;
-	@JsonFormat(pattern = "MM/dd/yyyy")
+	@JsonFormat(pattern = "MM/dd/yyyy", timezone = "GMT+8")
 	private Date startDate;
-	@JsonFormat(pattern = "MM/dd/yyyy")
+	@JsonFormat(pattern = "MM/dd/yyyy", timezone = "GMT+8")
 	private Date endDate;
 	private Date endDateConverted;
-	@JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss")
+	@JsonFormat(pattern = "MM/dd/yyyy HH:mm:ss", timezone = "GMT+8")
 	private Date anniversary;
 	private String type;
 	private String executionDate;
