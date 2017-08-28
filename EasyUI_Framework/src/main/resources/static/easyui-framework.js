@@ -885,9 +885,9 @@ function convertJavaDate2MonthDayYearHourMinuteAndSecond(object) {// Object can 
 	var year = monthDayAndYear[0];
 	var hourMinuteAndSecond = null;
 	if (data['browserVersion'] == 'IE8') {
-		hourMinuteAndSecond = date.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('Z')).split(':');
+		hourMinuteAndSecond = date.substring(date.indexOf('T') + 1, date.indexOf('Z')).split(':');
 	} else {// Assume that the user is using modern browser.
-		hourMinuteAndSecond = date.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('.')).split(':');
+		hourMinuteAndSecond = date.substring(date.indexOf('T') + 1, date.indexOf('.')).split(':');
 	}
 	var hour = hourMinuteAndSecond[0];
 	var minute = hourMinuteAndSecond[1];
