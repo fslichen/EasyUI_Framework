@@ -210,6 +210,7 @@ function initialize() {
 	data['localPagination'] = true;
 	data['clearForm'] = false;
 	data['cacheForm'] = true;
+	data['browserVersion'] = 'IE8';
 	// Initialize rich text editors.
 	tinymce.init({
 		selector : '.richTextEditor'// Rich text editor is created by setting class attribute as richTextEditor in text area.
@@ -865,32 +866,32 @@ function convertStringDate2MonthDayYearHourMinuteAndSecond(string) {// Example :
 	return convertStringDate2MonthDayAndYear(string) + ' ' + string.substring(string.indexOf(' ') + 1);
 }
 
-function convertJavaDate2MonthDayAndYear(object) {// Object can either be number or string.
-	var date = JSON.stringify(new Date(Number(object)));
-	date = date.substring(1, date.length - 1);
-	date = date.substring(0, date.indexOf('T'));
-	var yearMonthAndYear = date.split('-');
-	var month = yearMonthAndYear[1];
-	var day = yearMonthAndYear[2];
-	var year = yearMonthAndYear[0];
-	return month + '/' + day + '/' + year;
+function convertJavaDate2MonthDayYearHourMinuteAndSecond(object) {// Object can either be number or string.
+	var numericDate = Number(object);
+	if (data['browserVersion'] == 'IE8') {
+		numericDate += 8 * 3600 * 1000;// IE8 uses UTC time zone by default rather than the local time zone.
+	}
+	var date = JSON.stringify(new Date(numericDate));
+	date = date.substring(1, date.length - 1);// Remove double quotes.
+	var monthDayAndYear = date.substring(0, date.indexOf('T')).split('-');
+	var month = monthDayAndYear[1];
+	var day = monthDayAndYear[2];
+	var year = monthDayAndYear[0];
+	var hourMinuteAndSecond = null;
+	if (data['browserVersion'] == 'IE8') {
+		hourMinuteAndSecond = date.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('Z')).split(':');
+	} else {// Assume that the user is using modern browser.
+		hourMinuteAndSecond = date.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('.')).split(':');
+	}
+	var hour = hourMinuteAndSecond[0];
+	var minute = hourMinuteAndSecond[1];
+	var second = hourMinuteAndSecond[2];
+	return month + '/' + day + '/' + year + ' ' + hour + ':' + minute + ':' + second;
 }
 
-function convertJavaDate2MonthDayYearHourMinuteAndSecond(object) {// Object can either be number or string.
-	var dateTime = JSON.stringify(new Date(Number(object)));
-	var time = dateTime.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('.')).split(':');
-	var hour = time[0];
-	var minute = time[1];
-	var second = time[2];
-	if (!isNumber(hour) || !isNumber(minute) || !isNumber(second)) {// Probably the user is using IE8
-		object = Number(object) + 8 * 3600 * 1000;
-	    dateTime = JSON.stringify(new Date(object));
-		time = dateTime.substring(dateTime.indexOf('T') + 1, dateTime.indexOf('Z')).split(':');
-		hour = time[0];
-		minute = time[1];
-		second = time[2];
-	}
-	return convertJavaDate2MonthDayAndYear(object) + ' ' + hour + ':' + minute + ':' + second;
+function convertJavaDate2MonthDayAndYear(object) {// Object can either be number or string.
+	var monthDayYearHourMinuteAndSecond = convertJavaDate2MonthDayYearHourMinuteAndSecond(object);
+	return monthDayYearHourMinuteAndSecond.substring(0, monthDayYearHourMinuteAndSecond.indexOf(' '));
 }
 
 function sort(objects, sortField, order) {
