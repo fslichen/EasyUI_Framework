@@ -194,6 +194,10 @@ function setPageIndex(tableId, pageIndex) {
 	});
 }
 
+function getTimeZoneOffset() {
+	return data['timeZoneMap'][data['timeZone']];
+}
+
 function initialize() {
 	// Initialize Data
 	data = {};
@@ -211,6 +215,8 @@ function initialize() {
 	data['clearForm'] = false;
 	data['cacheForm'] = true;
 	data['browserVersion'] = 'IE8';
+	data['timeZone'] = 'BeiJing';
+	data['timeZoneMap'] = {'BeiJing' : 8, 'London' : 0, 'Korea' : 9};
 	// Initialize rich text editors.
 	tinymce.init({
 		selector : '.richTextEditor'// Rich text editor is created by setting class attribute as richTextEditor in text area.
@@ -869,7 +875,7 @@ function convertStringDate2MonthDayYearHourMinuteAndSecond(string) {// Example :
 function convertJavaDate2MonthDayYearHourMinuteAndSecond(object) {// Object can either be number or string.
 	var numericDate = Number(object);
 	if (data['browserVersion'] == 'IE8') {
-		numericDate += 8 * 3600 * 1000;// IE8 uses UTC time zone by default rather than the local time zone.
+		numericDate += getTimeZoneOffset() * 3600 * 1000;// IE8 uses UTC time zone by default rather than the local time zone.
 	}
 	var date = JSON.stringify(new Date(numericDate));
 	date = date.substring(1, date.length - 1);// Remove double quotes.
