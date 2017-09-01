@@ -452,10 +452,12 @@ function validateForm(id) {// ID is mostly dialog ID.
 				var numericValue = null;
 				if (count(value, '/') == 2) {// Date
 					numericValue = Date.parse(value);
-				} else {
+				} else if (value != null && value != '') {
 					numericValue = Number(value);
+				} else {
+					numericValue = null;
 				}
-				if (!isNaN(numericValue)) {
+				if (numericValue != null && !isNaN(numericValue)) {
 					if (numericValue >= previousValue) {
 						previousValue = numericValue;
 					} else {
