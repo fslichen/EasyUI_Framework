@@ -22,6 +22,7 @@ public class AnyPojo {
 	private String executionDate;
 	private Integer pageIndex;
 	private Integer pageSize;
+	private String systemCode;
 	public AnyPojo() {
 
 	}
@@ -39,6 +40,12 @@ public class AnyPojo {
 	}
 	public Date getBirthday() {
 		return birthday;
+	}
+	public String getSystemCode() {
+		return systemCode;
+	}
+	public void setSystemCode(String systemCode) {
+		this.systemCode = systemCode;
 	}
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
@@ -108,6 +115,7 @@ public class AnyPojo {
 		return "AnyPojo [name=" + name + ", gender=" + gender + ", birthday=" + birthday + ", email=" + email
 				+ ", message=" + message + ", startDate=" + startDate + ", endDate=" + endDate + ", endDateConverted="
 				+ endDateConverted + ", anniversary=" + anniversary + ", type=" + type + ", executionDate="
-				+ executionDate + ", pageIndex=" + pageIndex + ", pageSize=" + pageSize + "]";
+				+ executionDate + ", pageIndex=" + pageIndex + ", pageSize=" + pageSize + ", systemCode=" + systemCode
+				+ "]";
 	}
 }

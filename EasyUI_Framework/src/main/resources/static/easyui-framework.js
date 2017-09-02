@@ -22,16 +22,16 @@ function clearVisibleForm(id) {// ID is mostly dialog ID.
 	$('#' + id).find(getFormElements()).each(function () {
 		var field = $(this);
 		var fieldKey = getFieldKey(field);
-		if (field.attr('hidden')) {
-			return;
-		}
-		var fieldClass = field.attr('class');
-		if (isEasyUiField(fieldClass)) {
-			field.textbox('setText', '');
-		} else if (fieldClass == "richTextEditor") {
-			setRichText(fieldKey, '');
-		} else {
-			field.val('');
+		var isHidden = field.attr('hidden');
+		if (isHidden == null || isHidden == false) {
+			var fieldClass = field.attr('class');
+			if (isEasyUiField(fieldClass)) {
+				field.textbox('setText', '');
+			} else if (fieldClass == "richTextEditor") {
+				setRichText(fieldKey, '');
+			} else {
+				field.val('');
+			}
 		}
 	});
 }
