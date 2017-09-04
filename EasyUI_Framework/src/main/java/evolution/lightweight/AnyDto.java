@@ -1,8 +1,8 @@
-package evolution.controller.parameter.to.request.body;
+package evolution.lightweight;
 
 import java.util.Date;
 
-public class AnyDto {
+public class AnyDto extends Pagination {
 	private String name;
 	private int age;
 	private Date birthday;
@@ -26,6 +26,6 @@ public class AnyDto {
 	}
 	@Override
 	public String toString() {
-		return "AnyDto [name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
+		return "AnyDto [name=" + name + ", age=" + age + ", birthday=" + birthday + "page=" + this.getPage() + ", rows=" + this.getRows() + "]";
 	}
 }
