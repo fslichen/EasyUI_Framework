@@ -2,6 +2,8 @@ package evolution.controller.parameter.to.request.body;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +53,19 @@ public class Parameter2RequestBodyController {
 				setterMethod.invoke(t, new Double(parameterValue));
 			} else if (setterMethodParameterType == boolean.class || setterMethodParameterType == Boolean.class) {
 				setterMethod.invoke(t, new Boolean(parameterValue));
-			}// TODO Add more criteria, especially date.
+			} else if (setterMethodParameterType == Date.class) {
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+				try {
+					setterMethod.invoke(t, simpleDateFormat.parse(parameterValue));
+				} catch (Exception e0) {
+					simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+					try {
+						setterMethod.invoke(t, simpleDateFormat.parse(parameterValue));
+					} catch (Exception e1) {
+						// Add more criteria for parsing date.
+					}
+				}
+			}// TODO Add more criteria such as short, byte etc. 
 		}
 		return t;
 	}

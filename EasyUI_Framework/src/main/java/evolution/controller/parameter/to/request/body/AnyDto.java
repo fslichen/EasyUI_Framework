@@ -1,8 +1,17 @@
 package evolution.controller.parameter.to.request.body;
 
+import java.util.Date;
+
 public class AnyDto {
 	private String name;
 	private int age;
+	private Date birthday;
+	public Date getBirthday() {
+		return birthday;
+	}
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
 	public String getName() {
 		return name;
 	}
@@ -17,6 +26,6 @@ public class AnyDto {
 	}
 	@Override
 	public String toString() {
-		return "AnyDto [name=" + name + ", age=" + age + "]";
+		return "AnyDto [name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
 	}
 }
