@@ -27,8 +27,8 @@ public class LightweightController {
 		// Request Dto
 		System.out.println(lightWeightService.toMap(request));
 		AnyDto anyDto = lightWeightService.toT(request, AnyDto.class);
-		int pageIndex = anyDto.getPage() - 1;
-		int pageSize = anyDto.getRows();
+		int pageIndex = anyDto.getPage() == null ? 1 : anyDto.getPage() - 1;
+		int pageSize = anyDto.getRows() == null ? 0 : anyDto.getRows();
 		System.out.println(anyDto);
 		// Response Dtos
 		List<User> users = new LinkedList<>();
