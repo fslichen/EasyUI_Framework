@@ -30,13 +30,18 @@ public class LightweightController {
 		System.out.println(anyDto);
 		// Response Dtos
 		List<User> users = new LinkedList<>();
-		User user = new User();
-		user.setFirstName("Chen");
-		user.setLastName("Li");
-		user.setPhone("217-819-9008");
-		user.setEmail("fslichen@126.com");
-		user.setLanguage("java");
 		for (int i = rowIndex; i < rowIndex + pageSize; i++) {
+			User user = new User();
+			user.setId(i);
+			if (Math.random() < .5) {
+				user.setFirstName("Chen"); 
+			} else {
+				user.setFirstName("Ling");
+			}
+			user.setLastName("Li");
+			user.setPhone("217-819-9008");
+			user.setEmail("fslichen@126.com");
+			user.setLanguage("java");
 			users.add(user);
 		}
 		ResponseDto responseDto = new ResponseDto();

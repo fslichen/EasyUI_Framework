@@ -15,16 +15,10 @@ function createComboBox(formId, comboBoxName, optionMap) {
 	});
 }
 
-/*
- * [[{field:'code',title:'Code',width:100},
- *	 {field:'name',title:'Name',width:100},
- *	 {field:'price',title:'Price',width:100,align:'right'}
- * ]]
- * 
- */
 function createTable(tableId, columns) {
 	$('#' + tableId).datagrid({
-	    columns : columns
+		remoteSort : false,
+	    columns : [columns]
 	});
 }
 

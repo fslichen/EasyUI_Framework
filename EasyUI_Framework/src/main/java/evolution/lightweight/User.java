@@ -1,11 +1,18 @@
 package evolution.lightweight;
 
 public class User {
+	private Integer id;
 	private String firstName;
 	private String lastName;
 	private String phone;
 	private String email;
 	private String language;
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public String getLanguage() {
 		return language;
 	}
