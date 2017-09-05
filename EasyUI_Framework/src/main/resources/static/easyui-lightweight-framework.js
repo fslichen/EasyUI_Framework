@@ -3,9 +3,9 @@ function print(tableId, responseDto) {
 	var rows = responseDto.rows;
 	if (!rows) {
 		alert('Did you forget to set rows on back end?');
-		rows = [];
+		return;
 	}
-	$('#' + tableId).datagrid('loadData', []);// Romove existing rows.
+	$('#' + tableId).datagrid('loadData', []);// Remove existing rows.
 	for (i in rows) {
 		$('#' + tableId).datagrid('appendRow', rows[i]);
 	}
@@ -20,7 +20,13 @@ function print(tableId, responseDto) {
     });
 }
 
-function sendDtoAndPrint(url, requestDto, tableId, callBackFunction) {
+function sendDto(url, requestDto, callBackFunction) {
+	$.post(url, requestDto, function(responseDto) {
+		callBackFunction.call(responseDto);
+	});
+}
+
+function sendDtoAndPrint(url, requestDto, tableId) {
 	// Set default pagination info if necessary.
 	if (!requestDto.rowIndex) {
 		requestDto['rowIndex'] = DEFAULT_ROW_INDEX;
@@ -28,16 +34,13 @@ function sendDtoAndPrint(url, requestDto, tableId, callBackFunction) {
 	if (!requestDto.pageSize) {
 		requestDto['pageSize'] = DEFAULT_PAGE_SIZE;
 	}
-	// Store the request data so that pagination can retrieve them later on.
-	setUrl4Printing(tableId, url);
-	setRequestDto4Printing(tableId, requestDto);
-	// Send the post request and print.
-	$.post(url, requestDto, function(responseDto) {
-		print(tableId, responseDto);
+	sendDto(url, requestDto, function() {
+		// Store the request data so that pagination can retrieve them later on.
+		setUrl4Printing(tableId, url);
+		setRequestDto4Printing(tableId, requestDto);
+		// Print rows.
+		print(tableId, this);
 	});
-	if (callBackFunction) {
-		callBackFunction.call();
-	}
 }
 
 function definePagination(tableId) {
