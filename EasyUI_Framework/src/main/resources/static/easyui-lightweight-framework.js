@@ -15,7 +15,16 @@ function createComboBox(formId, comboBoxName, optionMap) {
 	});
 }
 
-function createTable(tableId, columns) {
+function createTable(tableId, columnMap) {
+	var columns = [];
+	for (key in columnMap) {
+		var column = {};
+		column['field'] = key;
+		column['title'] = columnMap[key];
+		column['width'] = 50;
+		column['sortable'] = true;
+		columns.push(column);
+	}
 	$('#' + tableId).datagrid({
 		remoteSort : false,
 	    columns : [columns]
