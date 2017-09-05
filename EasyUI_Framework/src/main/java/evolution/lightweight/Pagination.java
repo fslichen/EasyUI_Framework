@@ -1,18 +1,18 @@
 package evolution.lightweight;
 
 public class Pagination {// Compatible with easy-ui pagination.
-	private Integer page; 
-	private Integer rows;
-	public Integer getPage() {
-		return page;
+	private Integer rowIndex;
+	private Integer pageSize;
+	public Integer getRowIndex() {
+		return rowIndex;
 	}
-	public void setPage(Integer page) {
-		this.page = page;
+	public void setRowIndex(Integer rowIndex) {
+		this.rowIndex = rowIndex;
 	}
-	public Integer getRows() {
-		return rows;
+	public Integer getPageSize() {
+		return pageSize;
 	}
-	public void setRows(Integer rows) {
-		this.rows = rows;
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
 	}
 }

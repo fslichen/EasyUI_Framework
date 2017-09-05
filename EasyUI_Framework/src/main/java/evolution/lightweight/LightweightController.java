@@ -7,7 +7,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,19 +15,13 @@ public class LightweightController {
 	@Autowired
 	LightWeightService lightWeightService;
 	
-	@GetMapping("/get")
-	public void post(HttpServletRequest request) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		AnyDto anyDto = lightWeightService.toT(request, AnyDto.class);
-		System.out.println(anyDto);
-	}
-	
 	@PostMapping("/get_users")
-	public List<User> getUsers(HttpServletRequest request) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public ResponseDto getUsers(HttpServletRequest request) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// Request Dto
 		System.out.println(lightWeightService.toMap(request));
 		AnyDto anyDto = lightWeightService.toT(request, AnyDto.class);
-		int pageIndex = anyDto.getPage() == null ? 1 : anyDto.getPage() - 1;
-		int pageSize = anyDto.getRows() == null ? 0 : anyDto.getRows();
+		int rowIndex = anyDto.getRowIndex();
+		int pageSize = anyDto.getPageSize();
 		System.out.println(anyDto);
 		// Response Dtos
 		List<User> users = new LinkedList<>();
@@ -37,9 +30,12 @@ public class LightweightController {
 		user.setLastName("Li");
 		user.setPhone("217-819-9008");
 		user.setEmail("fslichen@126.com");
-		for (int i = pageIndex * pageSize; i < (pageIndex + 1) * pageSize; i++) {
+		for (int i = rowIndex; i < rowIndex + pageSize; i++) {
 			users.add(user);
 		}
-		return users;
+		ResponseDto responseDto = new ResponseDto();
+		responseDto.setRows(users);
+		responseDto.setRowCount(2358);
+		return responseDto;
 	}
 };

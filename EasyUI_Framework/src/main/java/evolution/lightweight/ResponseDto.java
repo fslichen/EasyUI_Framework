@@ -3,18 +3,18 @@ package evolution.lightweight;
 import java.util.List;
 
 public class ResponseDto {
-	private List<User> users;
-	private Integer total;
-	public List<User> getUsers() {
-		return users;
+	private List<User> rows;
+	private Integer rowCount;
+	public List<User> getRows() {
+		return rows;
 	}
-	public void setUsers(List<User> users) {
-		this.users = users;
+	public void setRows(List<User> rows) {
+		this.rows = rows;
 	}
-	public Integer getTotal() {
-		return total;
+	public Integer getRowCount() {
+		return rowCount;
 	}
-	public void setTotal(Integer total) {
-		this.total = total;
+	public void setRowCount(Integer rowCount) {
+		this.rowCount = rowCount;
 	}
 }

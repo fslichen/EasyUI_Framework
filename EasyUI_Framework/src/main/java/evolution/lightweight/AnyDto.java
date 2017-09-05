@@ -26,6 +26,6 @@ public class AnyDto extends Pagination {
 	}
 	@Override
 	public String toString() {
-		return "AnyDto [name=" + name + ", age=" + age + ", birthday=" + birthday + "page=" + this.getPage() + ", rows=" + this.getRows() + "]";
+		return "AnyDto [name=" + name + ", age=" + age + ", birthday=" + birthday + ", rowIndex=" + this.getRowIndex() + ", pageSize=" + this.getPageSize() + "]";
 	}
 }
