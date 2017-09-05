@@ -1,21 +1,27 @@
-function print(tableId, url, parameters, callBackFunction) {
-	if (!parameters.rowIndex) {
-		parameters['rowIndex'] = 0;
+function print(tableId, url, requestDto, callBackFunction) {
+	// Set default pagination info if necessary.
+	if (!requestDto.rowIndex) {
+		requestDto['rowIndex'] = DEFAULT_ROW_INDEX;
 	}
-	if (!parameters.pageSize) {
-		parameters['pageSize'] = 10;
+	if (!requestDto.pageSize) {
+		requestDto['pageSize'] = DEFAULT_PAGE_SIZE;
 	}
+	// Store the request data so that pagination can retrieve them later on.
 	setUrl4Printing(tableId, url);
-	setRequestDto4Printing(tableId, parameters);
-	$.post(url, parameters, function(responseDto) {
+	setRequestDto4Printing(tableId, requestDto);
+	// Send the post request and print.
+	$.post(url, requestDto, function(responseDto) {
+		// Print rows.
 		var rows = responseDto.rows;
 		if (!rows) {
 			alert('Did you forget to set rows on back end?');
 			rows = [];
 		}
+		$('#' + tableId).datagrid('loadData', []);// Romove existing rows.
 		for (i in rows) {
 			$('#' + tableId).datagrid('appendRow', rows[i]);
 		}
+		// Update row count.
 		var rowCount = responseDto.rowCount;
 		if (!rowCount) {
 			rowCount = DEFAULT_ROW_COUNT;
@@ -30,11 +36,11 @@ function print(tableId, url, parameters, callBackFunction) {
 	}
 }
 
-function initializePagination(tableId) {
+function definePagination(tableId) {
 	$('#' + tableId + 'Pagination').pagination({
-		pageNumber : 1,
-		pageSize : 10,
-		total : DEFAULT_ROW_COUNT,// TODO Send and Ajax request to get the row count.
+		pageNumber : DEFAULT_PAGE_NUMBER,
+		pageSize : DEFAULT_PAGE_SIZE,
+		total : DEFAULT_ROW_COUNT,
 		onSelectPage : function(pageNumber, pageSize) {
 			var requestDto = getRequestDto4Printing(tableId);
 			requestDto['rowIndex'] = (pageNumber - 1) * pageSize;
