@@ -1,3 +1,31 @@
+function createComboBox(formId, comboBoxName, optionMap) {
+	var options = [];
+	for (key in optionMap) {
+		var option = {};
+		option['label'] = optionMap[key];
+		option['value'] = key;
+		options.push(option);
+	}
+	var comboBox = findElement(formId, comboBoxName);
+	comboBox.combobox({
+		panelHeight : 'auto',
+		textField: 'label',
+		valueField: 'value',
+		data : options
+	});
+}
+
+function findElement(formId, name) {
+	var element = null;
+	$('#' + formId).find('input,select,textarea').each(function() {
+		if ($(this).attr('textboxname') == name) {// TODO Add support for Tiny MCE and HTML elements.
+			element = $(this);
+			return false;
+		}
+	});
+	return element;
+}
+
 function print(tableId, responseDto) {
 	// Print rows.
 	var rows = responseDto.rows;
@@ -56,8 +84,13 @@ function setFormData(tableId, formId) {
 	$('#' + formId).find('input,select,textarea').each(function() {
 		var clazz = $(this).attr('class');
 		if (clazz.indexOf('easyui') != -1) {// Easy UI Attributes
-			$(this).textbox('setText', row[$(this).attr('textboxname')]);
-		}// TODO Add support for Tiny MCE and HTML elements.
+			var value = row[$(this).attr('textboxname')];
+			if (clazz.indexOf('combobox') != -1) {
+				$(this).combobox('setValue', value);
+			} else {// TODO Add support for Tiny MCE and HTML elements.
+				$(this).textbox('setText', value);
+			}
+		}
 	});
 }
 
@@ -66,8 +99,14 @@ function getFormData(formId) {
 	$('#' + formId).find('input,select,textarea').each(function() {
 		var clazz = $(this).attr('class');
 		if (clazz.indexOf('easyui') != -1) {// Easy UI Attributes
-			formData[$(this).attr('textboxname')] = $(this).textbox('getText');
-		}// TODO Add support for Tiny MCE and HTML elements.
+			var value;
+			if (clazz.indexOf('combobox') != -1) {
+				value = $(this).combobox('getValue');
+			} else {// TODO Add support for Tiny MCE and HTML elements.
+				value = $(this).textbox('getText');
+			}
+			formData[$(this).attr('textboxname')] = value;
+		}
 	});
 	return formData;
 }

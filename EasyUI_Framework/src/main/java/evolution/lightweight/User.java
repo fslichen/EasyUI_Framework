@@ -5,6 +5,13 @@ public class User {
 	private String lastName;
 	private String phone;
 	private String email;
+	private String language;
+	public String getLanguage() {
+		return language;
+	}
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 	public String getFirstName() {
 		return firstName;
 	}

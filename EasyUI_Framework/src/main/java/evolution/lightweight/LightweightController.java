@@ -35,6 +35,7 @@ public class LightweightController {
 		user.setLastName("Li");
 		user.setPhone("217-819-9008");
 		user.setEmail("fslichen@126.com");
+		user.setLanguage("java");
 		for (int i = rowIndex; i < rowIndex + pageSize; i++) {
 			users.add(user);
 		}
