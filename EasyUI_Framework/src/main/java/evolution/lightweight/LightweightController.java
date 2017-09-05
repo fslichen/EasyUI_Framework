@@ -15,6 +15,11 @@ public class LightweightController {
 	@Autowired
 	LightWeightService lightWeightService;
 	
+	@PostMapping("/edit")
+	public void update(HttpServletRequest request) {
+		System.out.println(lightWeightService.toMap(request));
+	}
+	
 	@PostMapping("/get_users")
 	public ResponseDto getUsers(HttpServletRequest request) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// Request Dto
