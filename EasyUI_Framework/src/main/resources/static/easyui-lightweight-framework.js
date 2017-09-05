@@ -1,4 +1,26 @@
-function print(tableId, url, requestDto, callBackFunction) {
+function print(tableId, responseDto) {
+	// Print rows.
+	var rows = responseDto.rows;
+	if (!rows) {
+		alert('Did you forget to set rows on back end?');
+		rows = [];
+	}
+	$('#' + tableId).datagrid('loadData', []);// Romove existing rows.
+	for (i in rows) {
+		$('#' + tableId).datagrid('appendRow', rows[i]);
+	}
+	// Update row count.
+	var rowCount = responseDto.rowCount;
+	if (!rowCount) {
+		rowCount = DEFAULT_ROW_COUNT;
+		alert('Did you forget to set row count on back end?');
+	}
+	$('#' + tableId + 'Pagination').pagination({
+		total : rowCount
+    });
+}
+
+function sendDtoAndPrint(url, requestDto, tableId, callBackFunction) {
 	// Set default pagination info if necessary.
 	if (!requestDto.rowIndex) {
 		requestDto['rowIndex'] = DEFAULT_ROW_INDEX;
@@ -11,25 +33,7 @@ function print(tableId, url, requestDto, callBackFunction) {
 	setRequestDto4Printing(tableId, requestDto);
 	// Send the post request and print.
 	$.post(url, requestDto, function(responseDto) {
-		// Print rows.
-		var rows = responseDto.rows;
-		if (!rows) {
-			alert('Did you forget to set rows on back end?');
-			rows = [];
-		}
-		$('#' + tableId).datagrid('loadData', []);// Romove existing rows.
-		for (i in rows) {
-			$('#' + tableId).datagrid('appendRow', rows[i]);
-		}
-		// Update row count.
-		var rowCount = responseDto.rowCount;
-		if (!rowCount) {
-			rowCount = DEFAULT_ROW_COUNT;
-			alert('Did you forget to set row count on back end?');
-		}
-		$('#' + tableId + 'Pagination').pagination({
-			total : rowCount
-	    });
+		print(tableId, responseDto);
 	});
 	if (callBackFunction) {
 		callBackFunction.call();
@@ -46,7 +50,7 @@ function definePagination(tableId) {
 			requestDto['rowIndex'] = (pageNumber - 1) * pageSize;
 			requestDto['pageSize'] = pageSize;
 			setRequestDto4Printing(tableId, requestDto);
-			print(tableId, getUrl4Printing(tableId), requestDto);
+			sendDtoAndPrint(getUrl4Printing(tableId), requestDto, tableId);
         }
     });
 }
