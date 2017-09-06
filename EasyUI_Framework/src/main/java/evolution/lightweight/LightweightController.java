@@ -8,19 +8,31 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/lightweight")
 public class LightweightController {
 	@Autowired
 	LightWeightService lightWeightService;
 	
-	@PostMapping("/edit")
+	@PostMapping("/insert")
+	public void insert(HttpServletRequest request) {
+		System.out.println(lightWeightService.toMap(request));
+	}
+	
+	@PostMapping("/update")
 	public void update(HttpServletRequest request) {
 		System.out.println(lightWeightService.toMap(request));
 	}
 	
-	@PostMapping("/get_users")
+	@PostMapping("/delete")
+	public void delete(HttpServletRequest request) {
+		System.out.println(lightWeightService.toMap(request));
+	}
+	
+	@PostMapping("/find")
 	public ResponseDto getUsers(HttpServletRequest request) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		// Request Dto
 		System.out.println(lightWeightService.toMap(request));
@@ -49,4 +61,4 @@ public class LightweightController {
 		responseDto.setRowCount(2358);
 		return responseDto;
 	}
-};
+}

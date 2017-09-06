@@ -16,6 +16,7 @@ function createComboBox(formId, comboBoxName, optionMap) {
 }
 
 function createTable(tableId, columnMap) {
+	definePagination(tableId);
 	var columns = [];
 	for (key in columnMap) {
 		var column = {};
@@ -46,7 +47,7 @@ function print(tableId, responseDto) {
 	// Print rows.
 	var rows = responseDto.rows;
 	if (!rows) {
-		alert('Did you forget to set rows on back end?');
+		message('Did you forget to set rows on back end?', '你忘了填返回数据吧?');
 		return;
 	}
 	$('#' + tableId).datagrid('loadData', []);// Remove existing rows.
@@ -57,7 +58,7 @@ function print(tableId, responseDto) {
 	var rowCount = responseDto.rowCount;
 	if (!rowCount) {
 		rowCount = DEFAULT_ROW_COUNT;
-		alert('Did you forget to set row count on back end?');
+		message('Did you forget to set row count on back end?', '你忘了填记录总数吧?');
 	}
 	$('#' + tableId + 'Pagination').pagination({
 		total : rowCount
@@ -94,7 +95,7 @@ function openDialog(dialogId) {
 function setFormData(tableId, formId) {
 	var row = $('#' + tableId).datagrid('getSelected');
 	if (!row) {
-		alert('Please select a row.');
+		message('Please select a row.', '请选择一行数据');
 		return;
 	}
 	$('#' + formId).find('input,select,textarea').each(function() {
@@ -144,4 +145,32 @@ function definePagination(tableId) {
 			sendDtoAndPrint(getUrl4Table(tableId), requestDto, tableId);
         }
     });
+}
+
+function message(englishMessage, chineseMessage, language) {
+	if (language == 'English') {
+		$.messager.alert({
+			ok : 'OK',
+			title : 'Message',
+			msg : englishMessage
+		});
+	} else if (language == null || language == 'Chinese') {
+		$.messager.alert({
+			ok : '确定',
+			title : '消息',
+			msg : chineseMessage
+		});
+	}
+}
+
+function sendRowAndPrint(url, tableId4Row, tableId) {
+	$('#' + tableId4Row).datagrid({
+		onClickRow : function(index, row) {
+			sendDtoAndPrint(url, row, tableId);
+		}
+	});
+}
+
+function sendForm(url, formId) {
+	sendDto(url, getFormData(formId));
 }
