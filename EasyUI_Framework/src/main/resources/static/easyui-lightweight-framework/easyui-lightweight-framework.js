@@ -67,7 +67,9 @@ function print(tableId, responseDto) {
 
 function sendDto(url, requestDto, callBackFunction) {
 	$.post(url, requestDto, function(responseDto) {
-		callBackFunction.call(responseDto);
+		if (callBackFunction) {
+			callBackFunction.call(responseDto);
+		}
 	});
 }
 
@@ -173,4 +175,8 @@ function sendRowAndPrint(url, tableId4Row, tableId) {
 
 function sendForm(url, formId) {
 	sendDto(url, getFormData(formId));
+}
+
+function closeDialog(dialogId) {
+	$('#' + dialogId).dialog('close');
 }
