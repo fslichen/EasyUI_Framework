@@ -87,9 +87,7 @@ public class CheckService {
 		} else {
 			if (operation == Operation.INSERT) {
 				t.setDeleteFlag(true);
-				// TODO Call service and send only the status.
-			} else {
-				// TODO Call service and send the entire DTO.
+				// TODO Call service and revoke the insert operation.
 			}
 		}
 		checkDao.deleteById(id);
