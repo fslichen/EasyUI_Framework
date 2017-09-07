@@ -194,7 +194,7 @@ function validateForm(formId, formData) {
 	// Customized Validation
 	var formValidationFunction = getFormValidationFunction(formId);
 	if (formValidationFunction) {
-		return validationFunction.call(formData);
+		return formValidationFunction.call(formData);
 	}
 	return true;
 }
