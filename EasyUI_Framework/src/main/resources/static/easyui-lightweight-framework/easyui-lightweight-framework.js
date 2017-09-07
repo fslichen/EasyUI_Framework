@@ -136,21 +136,49 @@ function setFormData(tableId, formId) {
 function getFormData(formId) {
 	var formData = {};
 	$('#' + formId).find('input,select,textarea').each(function() {
-		var clazz = $(this).attr('class');
-		if (clazz.indexOf('easyui') != -1) {// Easy UI Attributes
-			var value;
-			if (clazz.indexOf('combobox') != -1) {
-				value = $(this).combobox('getValue');
-			} else {// TODO Add support for Tiny MCE and HTML elements.
-				value = $(this).textbox('getText');
-			}
-			formData[$(this).attr('textboxname')] = value;
-		}
+		formData[getElementKey($(this))] = getElementValue($(this));
 	});
 	return formData;
 }
 
+function getElementKey(element) {
+	return element.attr('textboxname');// TODO Also consider the tiny MCE and HTML element case. 
+}
+
+function getElementLabel(element) {
+	return element.attr('label');
+}
+
+function getElementValue(element) {
+	var value = null;
+	var clazz = element.attr('class');
+	if (clazz.indexOf('easyui') != -1) {// Easy UI Attributes
+		if (clazz.indexOf('combobox') != -1) {
+			value = element.combobox('getValue');
+		} else {// TODO Add support for Tiny MCE and HTML elements.
+			value = element.textbox('getText');
+		}
+	}
+	return value;
+}
+
 function validateForm(formId, formData) {
+	// General Validation
+	var valid = true;
+	var elementLabel = null;
+	$('#' + formId).find('input,select,textarea').each(function() {
+		var required = $(this).attr('required');
+		if ((required == true || required == 'required') && getElementValue($(this)) == '') {
+			valid = false;
+			elementLabel = getElementLabel($(this));
+			return false;
+		}
+	});
+	if (!valid) {
+		message(elementLabel + ' should not be null.', elementLabel + '不可为空');
+		return false;
+	}
+	// Customized Validation
 	var formValidationFunction = getFormValidationFunction(formId);
 	if (formValidationFunction) {
 		return validationFunction.call(formData);
@@ -162,7 +190,9 @@ function sendFormAndPrint(url, formId, tableId) {
 	var formData = getFormData(formId);
 	if (validateForm(formId, formData)) {
 		sendDtoAndPrint(url, formData, tableId);
+		return true;
 	}
+	return false;
 }
 
 function definePagination(tableId) {
@@ -208,7 +238,9 @@ function sendForm(url, formId) {
 	var formData = getFormData(formId);
 	if (validateForm(formId, formData)) {
 		sendDto(url, formData);
+		return true;
 	}
+	return false;
 }
 
 function closeDialog(dialogId) {
