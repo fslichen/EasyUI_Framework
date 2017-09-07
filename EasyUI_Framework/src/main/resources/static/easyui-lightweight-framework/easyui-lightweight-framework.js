@@ -51,7 +51,7 @@ function print(tableId, responseDto) {
 		return;
 	}
 	$('#' + tableId).datagrid('loadData', []);// Remove existing rows.
-	var tableColumnAttributes = getTableColumnAttributes(tableId);
+	var tableColumnAttributes = getTableColumnAttribute(tableId);
 	var columnFields = $('#' + tableId).datagrid('getColumnFields');
 	for (i in rows) {
 		var row = rows[i];
@@ -150,8 +150,19 @@ function getFormData(formId) {
 	return formData;
 }
 
+function validateForm(formId, formData) {
+	var formValidationFunction = getFormValidationFunction(formId);
+	if (formValidationFunction) {
+		return validationFunction.call(formData);
+	}
+	return true;
+}
+
 function sendFormAndPrint(url, formId, tableId) {
-	sendDtoAndPrint(url, getFormData(formId), tableId);
+	var formData = getFormData(formId);
+	if (validateForm(formId, formData)) {
+		sendDtoAndPrint(url, formData, tableId);
+	}
 }
 
 function definePagination(tableId) {
@@ -194,7 +205,10 @@ function sendRowAndPrint(url, tableId4Row, tableId) {
 }
 
 function sendForm(url, formId) {
-	sendDto(url, getFormData(formId));
+	var formData = getFormData(formId);
+	if (validateForm(formId, formData)) {
+		sendDto(url, formData);
+	}
 }
 
 function closeDialog(dialogId) {
