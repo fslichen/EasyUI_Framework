@@ -1,5 +1,7 @@
 package evolution.lightweight;
 
+import java.util.Date;
+
 public class User {
 	private Integer id;
 	private String firstName;
@@ -7,6 +9,20 @@ public class User {
 	private String phone;
 	private String email;
 	private String language;
+	private String statusFlag;
+	private Date birthday;
+	public Date getBirthday() {
+		return birthday;
+	}
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+	public String getStatusFlag() {
+		return statusFlag;
+	}
+	public void setStatusFlag(String statusFlag) {
+		this.statusFlag = statusFlag;
+	}
 	public Integer getId() {
 		return id;
 	}

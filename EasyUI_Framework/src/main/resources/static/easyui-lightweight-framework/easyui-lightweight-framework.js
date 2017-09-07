@@ -51,8 +51,28 @@ function print(tableId, responseDto) {
 		return;
 	}
 	$('#' + tableId).datagrid('loadData', []);// Remove existing rows.
+	var tableColumnAttributes = getTableColumnAttributes(tableId);
+	var columnFields = $('#' + tableId).datagrid('getColumnFields');
 	for (i in rows) {
-		$('#' + tableId).datagrid('appendRow', rows[i]);
+		var row = rows[i];
+		if (tableColumnAttributes) {
+			for (var j in columnFields) {
+				var columnField = columnFields[j];
+				var attribute = tableColumnAttributes[columnField];
+				if (attribute) {
+					if (columnField.indexOf('Alias') != -1) {
+						row[columnField] = attribute[row[columnField.substring(0, columnField.indexOf('Alias'))]];
+					} else if (attribute.indexOf('date') != -1) {
+						if (attribute == 'date') {
+							row[columnField] = getDate(row[columnField]);
+						} else if (attribute == 'dateTime') {
+							row[columnField] = getDateTime(row[columnField]);
+						}
+					} 
+				} 
+			}
+		}
+		$('#' + tableId).datagrid('appendRow', row);
 	}
 	// Update row count.
 	var rowCount = responseDto.rowCount;

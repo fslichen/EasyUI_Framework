@@ -1,6 +1,7 @@
 package evolution.lightweight;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,13 +48,16 @@ public class LightweightController {
 			user.setId(i);
 			if (Math.random() < .5) {
 				user.setFirstName("Chen"); 
+				user.setStatusFlag("0");
 			} else {
 				user.setFirstName("Ling");
+				user.setStatusFlag("1");
 			}
 			user.setLastName("Li");
 			user.setPhone("217-819-9008");
 			user.setEmail("fslichen@126.com");
 			user.setLanguage("java");
+			user.setBirthday(new Date());
 			users.add(user);
 		}
 		ResponseDto responseDto = new ResponseDto();
