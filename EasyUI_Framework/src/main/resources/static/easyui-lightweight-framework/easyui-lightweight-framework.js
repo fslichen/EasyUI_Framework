@@ -167,15 +167,28 @@ function validateForm(formId, formData) {
 	var valid = true;
 	var elementLabel = null;
 	$('#' + formId).find('input,select,textarea').each(function() {
+		// Not Null Validation
 		var required = $(this).attr('required');
+		elementLabel = getElementLabel($(this));
 		if ((required == true || required == 'required') && getElementValue($(this)) == '') {
-			valid = false;
-			elementLabel = getElementLabel($(this));
-			return false;
+			message(elementLabel + ' should not be null.', elementLabel + '不可为空');
+			valid = false; return false;
+		}
+		// Date Validation
+		var clazz = $(this).attr('class')
+		if (clazz.indexOf('easyui-datebox') != -1) {
+			if (!isDate(getElementValue($(this)))) {
+				message(elementLabel + ' is not a valid date.', elementLabel + '日期格式不合法');
+				valid = false; return false;
+			}
+		} else if (clazz.indexOf('easyui-datetimebox') != -1) {
+			if (!isDateTime(getElementValue($(this)))) {
+				message(elementLabel + ' is not a valid date-time.', elementLabel + '时间格式不合法');
+				valid = false; return false;
+			}
 		}
 	});
 	if (!valid) {
-		message(elementLabel + ' should not be null.', elementLabel + '不可为空');
 		return false;
 	}
 	// Customized Validation
